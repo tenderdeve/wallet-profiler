@@ -1,4 +1,4 @@
-// TODO Day 21 — Wallet Profile hook
+// TODO Day 3 — Wallet Profile hook
 // Will manage: balance, txCount, ensName, walletAge, nftCount, badge, loading, error
 // Calls: lib/services/wallet.* and lib/services/nft.* in parallel via Promise.all
 

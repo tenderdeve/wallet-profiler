@@ -1,4 +1,4 @@
-// TODO Day 20 — Activity Feed Component
+// TODO Day 2 — Activity Feed Component
 // Will use: useActivityFeed hook, SkeletonFeedItem, Card
 // Displays: Twitter-style TX list with labels, timestamps, Etherscan links, Load More
 
@@ -7,7 +7,7 @@
 export default function ActivityFeed({ address: _address }) {
   return (
     <div className="text-gray-500 text-sm p-4">
-      ActivityFeed — coming Day 20
+      ActivityFeed — coming Day 2
     </div>
   );
 }

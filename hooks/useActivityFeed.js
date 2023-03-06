@@ -1,4 +1,4 @@
-// TODO Day 20 — Activity Feed hook
+// TODO Day 2 — Activity Feed hook
 // Will manage: transfers state, pagination (pageKey), loading, error
 // Calls: lib/services/transfers.getTransfers()
 
