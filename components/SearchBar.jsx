@@ -3,21 +3,42 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { isAddress } from 'ethers';
-import { resolveEnsName } from '@/lib/services/wallet';
+// FIX 1 — resolveEnsName removed from client imports.
+// ENS resolution now goes through /api/alchemy (server-side) so ALCHEMY_API_KEY
+// is never bundled into the client.
 import {
   LOCALSTORAGE_RECENT_SEARCHES,
   RECENT_SEARCHES_MAX,
 } from '@/lib/constants';
 
 /**
+ * FIX 2 — Single validation function used everywhere input is checked.
+ * Trims whitespace before testing so leading/trailing spaces never reach
+ * the router or the API route.
+ * @param {string} value
+ * @returns {boolean}
+ */
+function isValidInput(value) {
+  const trimmed = value.trim();
+  if (isAddress(trimmed)) return true;
+  if (trimmed.endsWith('.eth') && trimmed.length > 4) return true;
+  return false;
+}
+
+/**
  * Reads recent searches from localStorage.
- * Wrapped in try/catch — localStorage can be unavailable (private mode, SSR).
+ * FIX 3 — Parsed array is filtered through isValidInput() so any malicious
+ * string that was somehow written to storage is never rendered or acted on.
  * @returns {string[]}
  */
 function readRecentSearches() {
   try {
     const raw = localStorage.getItem(LOCALSTORAGE_RECENT_SEARCHES);
-    return raw ? JSON.parse(raw) : [];
+    const parsed = raw ? JSON.parse(raw) : [];
+    // Sanitize: reject anything that is not a valid address or .eth name.
+    return parsed
+      .filter((e) => typeof e === 'string' && isValidInput(e))
+      .slice(0, RECENT_SEARCHES_MAX);
   } catch {
     return [];
   }
@@ -25,9 +46,12 @@ function readRecentSearches() {
 
 /**
  * Prepends a new entry to recent searches, deduplicates, and caps at max.
+ * FIX 3 — Only values that pass isValidInput() are written to storage.
  * @param {string} entry
  */
 function saveRecentSearch(entry) {
+  // Guard: never persist a value that is not a valid address or ENS name.
+  if (!isValidInput(entry)) return;
   try {
     const existing = readRecentSearches();
     const updated = [entry, ...existing.filter((e) => e !== entry)].slice(
@@ -68,17 +92,30 @@ export default function SearchBar() {
 
       setError(null);
 
+      // FIX 2 — Validate before any navigation or API call.
+      if (!isValidInput(trimmed)) {
+        setError('Enter a valid wallet address or ENS name');
+        return;
+      }
+
       // Direct Ethereum address — navigate immediately
       if (isAddress(trimmed)) {
         navigate(trimmed, trimmed);
         return;
       }
 
-      // ENS name — resolve first
+      // ENS name — resolve via server-side API route so ALCHEMY_API_KEY stays server-only.
+      // FIX 4 — ENS resolution only fires on form submit (Enter key or button click),
+      // never on input change, so no debounce is needed.
       if (trimmed.endsWith('.eth')) {
         setIsResolving(true);
         try {
-          const resolved = await resolveEnsName(trimmed);
+          const res = await fetch(
+            `/api/alchemy?name=${encodeURIComponent(trimmed)}`
+          );
+          if (!res.ok) throw new Error('API error');
+          const data = await res.json();
+          const resolved = data.address;
           if (!resolved) {
             setError(
               'ENS name could not be resolved. Note: ENS resolution has limited support on Sepolia testnet.'
@@ -93,12 +130,11 @@ export default function SearchBar() {
         }
         return;
       }
-
-      setError('Enter a valid Ethereum address (0x…) or ENS name (.eth)');
     },
     [navigate]
   );
 
+  // FIX 4 — Search only fires on Enter key or button click, never on input change.
   const handleKeyDown = useCallback(
     (e) => {
       if (e.key === 'Enter') handleSearch(input);
