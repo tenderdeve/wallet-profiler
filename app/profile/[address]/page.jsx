@@ -1,8 +1,10 @@
 import Link from 'next/link';
+import ActivityFeed from '@/components/ActivityFeed';
 import { truncateAddress } from '@/lib/utils';
 
-// Day 1 placeholder — full implementation arrives Day 2–4
-// Will assemble: WalletProfile + ActivityFeed + StatsDashboard
+// Day 2 — ActivityFeed wired in.
+// Day 3 — WalletProfile replaces the address placeholder below.
+// Day 4 — StatsDashboard added below the feed.
 
 export function generateMetadata({ params }) {
   return {
@@ -11,25 +13,51 @@ export function generateMetadata({ params }) {
 }
 
 export default function ProfilePage({ params }) {
+  const { address } = params;
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 px-4 py-16 text-center">
-      <div className="flex flex-col items-center gap-2">
-        <span className="text-xs font-medium uppercase tracking-widest text-gray-500">
-          Wallet
-        </span>
-        <h1 className="break-all font-mono text-lg font-semibold text-gray-100 sm:text-xl">
-          {params.address}
-        </h1>
-      </div>
-      <p className="text-sm text-gray-500">
-        Profile view coming in Day 2–4.
-      </p>
+    <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+      {/* Back link */}
       <Link
         href="/"
-        className="rounded-lg border border-gray-700 bg-gray-900 px-4 py-2 text-sm text-gray-300 hover:border-blue-500 hover:text-white transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-100 transition-colors"
       >
-        ← Back to search
+        <svg
+          className="h-4 w-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+          />
+        </svg>
+        Back to search
       </Link>
+
+      {/* Wallet header — WalletProfile component slots in here on Day 3 */}
+      <div className="mt-6 mb-8 rounded-xl border border-gray-800 bg-gray-900 px-5 py-4">
+        <p className="mb-1 text-xs font-medium uppercase tracking-widest text-gray-500">
+          Wallet
+        </p>
+        <p className="break-all font-mono text-sm text-gray-100 sm:text-base">
+          {address}
+        </p>
+      </div>
+
+      {/* Activity Feed */}
+      <section>
+        <h2 className="mb-4 text-base font-semibold text-gray-100">
+          Activity
+        </h2>
+        <ActivityFeed address={address} />
+      </section>
+
+      {/* Stats Dashboard — added Day 4 */}
     </main>
   );
 }
