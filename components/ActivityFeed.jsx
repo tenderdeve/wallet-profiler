@@ -8,7 +8,57 @@ import { truncateHash, timeAgo } from '@/lib/utils';
 
 const SKELETON_COUNT = 8;
 
-// ─── Label + icon helpers ────────────────────────────────────────────────────
+// ─── Security helpers ─────────────────────────────────────────────────────────
+
+/**
+ * FIX 1 — validates a TX hash before using it in a URL.
+ * Guards against javascript: protocol injection via crafted hash values.
+ * @param {*} hash
+ * @returns {boolean}
+ */
+function isValidTxHash(hash) {
+  return (
+    typeof hash === 'string' &&
+    hash.startsWith('0x') &&
+    hash.length === 66 &&
+    /^0x[0-9a-fA-F]{64}$/.test(hash)
+  );
+}
+
+/**
+ * FIX 3 — sanitizes any string from the Alchemy response before rendering.
+ * Strips non-display characters, caps length, and falls back to 'Unknown'.
+ * Prevents unexpected characters from asset names breaking layout or leaking markup.
+ * @param {*} str
+ * @returns {string}
+ */
+function sanitizeDisplayString(str) {
+  if (typeof str !== 'string') return 'Unknown';
+  const cleaned = str.trim().replace(/[^a-zA-Z0-9 ._\-$%]/g, '');
+  return cleaned.length > 42 ? `${cleaned.slice(0, 42)}...` : cleaned;
+}
+
+/**
+ * FIX 4 — formats a transfer value safely, guarding against extreme numbers,
+ * NaN, Infinity, and unexpectedly long string representations.
+ * Prevents layout-breaking display from scientific notation or huge values.
+ * @param {*} value
+ * @returns {string}
+ */
+function formatValue(value) {
+  if (value == null) return '0';
+  const num = parseFloat(value);
+  if (isNaN(num) || !isFinite(num)) return '0';
+  let result;
+  if (num > 1_000_000) {
+    result = `${num.toExponential(2)} (large)`;
+  } else {
+    result = num.toFixed(4);
+  }
+  return result.length > 20 ? `${result.slice(0, 20)}...` : result;
+}
+
+// ─── Label + icon helpers ─────────────────────────────────────────────────────
 
 /**
  * Derives the human-readable label, icon type, icon colour class, and
@@ -19,22 +69,24 @@ const SKELETON_COUNT = 8;
  *   red    = sent (ETH / ERC-20)
  *   blue   = ERC-721 NFT
  *   purple = ERC-1155 multi-token
- *
- * @param {Object} tx - Alchemy AssetTransfer
- * @param {string} walletAddress - The wallet being profiled
  */
 function getTxMeta(tx, walletAddress) {
   const isSent = tx.from?.toLowerCase() === walletAddress.toLowerCase();
-  const asset = tx.asset || '';
-  const rawValue = tx.value != null ? parseFloat(tx.value) : 0;
-  const value = rawValue > 0 ? rawValue.toFixed(4) : null;
+
+  // FIX 3 — sanitize asset name from Alchemy before embedding in any string or rendering
+  const asset = sanitizeDisplayString(tx.asset || '');
+
+  // FIX 4 — use formatValue for all numeric display; null means "don't show" (zero / missing)
+  const formattedValue = formatValue(tx.value);
+  const value = formattedValue !== '0' ? formattedValue : null;
 
   switch (tx.category) {
     case TX_CATEGORIES.ERC721:
       return {
-        label: isSent
+        // FIX 3 — label sanitized via sanitizeDisplayString applied to asset above
+        label: sanitizeDisplayString(isSent
           ? 'Transferred NFT'
-          : `Minted NFT${asset ? ` ${asset}` : ''}`,
+          : `Minted NFT${asset ? ` ${asset}` : ''}`),
         iconType: 'nft',
         iconColorClass: 'bg-blue-500/20 text-blue-400',
         valueDisplay: asset || null,
@@ -42,9 +94,9 @@ function getTxMeta(tx, walletAddress) {
 
     case TX_CATEGORIES.ERC1155:
       return {
-        label: isSent
+        label: sanitizeDisplayString(isSent
           ? 'Transferred NFT'
-          : `Received NFT${asset ? ` ${asset}` : ''}`,
+          : `Received NFT${asset ? ` ${asset}` : ''}`),
         iconType: 'nft',
         iconColorClass: 'bg-purple-500/20 text-purple-400',
         valueDisplay: asset || null,
@@ -52,21 +104,22 @@ function getTxMeta(tx, walletAddress) {
 
     case TX_CATEGORIES.ERC20:
       return {
-        label: isSent
+        label: sanitizeDisplayString(isSent
           ? `Sent ${value ? `${value} ` : ''}${asset}`.trim()
-          : `Received ${value ? `${value} ` : ''}${asset}`.trim(),
+          : `Received ${value ? `${value} ` : ''}${asset}`.trim()),
         iconType: isSent ? 'sent' : 'received',
         iconColorClass: isSent
           ? 'bg-red-500/20 text-red-400'
           : 'bg-green-500/20 text-green-400',
+        // FIX 3 — valueDisplay uses sanitized asset; FIX 4 — value from formatValue
         valueDisplay: value ? `${value} ${asset}` : asset || null,
       };
 
     default: // external (ETH)
       return {
-        label: isSent
+        label: sanitizeDisplayString(isSent
           ? `Sent ${value ? `${value} ETH` : 'ETH'}`
-          : `Received ${value ? `${value} ETH` : 'ETH'}`,
+          : `Received ${value ? `${value} ETH` : 'ETH'}`),
         iconType: isSent ? 'sent' : 'received',
         iconColorClass: isSent
           ? 'bg-red-500/20 text-red-400'
@@ -146,7 +199,10 @@ function FeedItem({ tx, address }) {
   const timestamp = tx.metadata?.blockTimestamp
     ? timeAgo(tx.metadata.blockTimestamp)
     : null;
-  const explorerUrl = `${ETHERSCAN_BASE_URL}/tx/${tx.hash}`;
+
+  // FIX 1 — validate hash before constructing URL; invalid hash renders as plain text only
+  const validHash = isValidTxHash(tx.hash);
+  const explorerUrl = validHash ? `${ETHERSCAN_BASE_URL}/tx/${tx.hash}` : null;
 
   return (
     <div className="flex items-center gap-4 px-5 py-4">
@@ -158,15 +214,21 @@ function FeedItem({ tx, address }) {
           {label}
         </span>
         <div className="flex items-center gap-1.5 text-xs text-gray-500">
-          <a
-            href={explorerUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-mono hover:text-blue-400 transition-colors"
-            title={tx.hash}
-          >
-            {truncateHash(tx.hash)}
-          </a>
+          {/* FIX 1 — only render an anchor when the hash passes validation */}
+          {explorerUrl ? (
+            <a
+              href={explorerUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono hover:text-blue-400 transition-colors"
+              title={tx.hash}
+            >
+              {truncateHash(tx.hash)}
+            </a>
+          ) : (
+            // FIX 1 — invalid hash rendered as unclickable text, no href constructed
+            <span className="font-mono">{truncateHash(tx.hash)}</span>
+          )}
           {timestamp && (
             <>
               <span aria-hidden="true">·</span>
@@ -243,7 +305,7 @@ export default function ActivityFeed({ address }) {
         ))}
       </div>
 
-      {/* Load More */}
+      {/* FIX 6 — hasMore is only true when safePageKey() confirmed a real next-page cursor exists */}
       {hasMore && (
         <div className="border-t border-gray-800 px-5 py-4">
           <button

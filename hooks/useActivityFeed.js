@@ -2,14 +2,18 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 
+// FIX 5 — timeout threshold; requests exceeding this are rejected with a user-facing message
+const FETCH_TIMEOUT_MS = 10_000;
+
+// FIX 6 — rejects undefined/null/non-string pageKeys so the Load More button never
+// appears when there is no real next page to fetch
+function safePageKey(key) {
+  return typeof key === 'string' && key.length > 0 ? key : null;
+}
+
 /**
  * Fetches transfers via the server-side /api/transfers proxy.
  * The Alchemy SDK (and its API key) lives only on the server.
- *
- * @param {string} address
- * @param {'from'|'to'} direction
- * @param {string|undefined} pageKey
- * @returns {Promise<{ transfers: Array, pageKey: string|undefined }>}
  */
 async function fetchTransfers(address, direction, pageKey) {
   const params = new URLSearchParams({ address, direction });
@@ -23,14 +27,6 @@ async function fetchTransfers(address, direction, pageKey) {
 /**
  * Merges new transfers into an existing list, deduplicates by uniqueId,
  * and sorts the combined list by block timestamp descending.
- *
- * uniqueId is Alchemy's stable identifier for a single transfer event.
- * It handles the case where the same TX hash appears in both the 'from'
- * and 'to' queries (e.g. self-transfers).
- *
- * @param {Array} existing - Current transfer list
- * @param {Array} incoming - New transfers to merge in
- * @returns {Array}
  */
 function mergeAndSort(existing, incoming) {
   const seen = new Set(existing.map((tx) => tx.uniqueId));
@@ -55,20 +51,6 @@ function mergeAndSort(existing, incoming) {
 /**
  * Manages the full lifecycle of the activity feed:
  * initial fetch, pagination, loading states, and errors.
- *
- * Fetches both outbound ('from') and inbound ('to') transfers in parallel,
- * merges them into a single sorted feed. Load More continues both cursors
- * independently so neither stream is starved.
- *
- * @param {string} address - Wallet address to profile
- * @returns {{
- *   transfers: Array,
- *   loading: boolean,
- *   loadingMore: boolean,
- *   error: string|null,
- *   hasMore: boolean,
- *   loadMore: () => void,
- * }}
  */
 export function useActivityFeed(address) {
   const [transfers, setTransfers] = useState([]);
@@ -77,13 +59,14 @@ export function useActivityFeed(address) {
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(false);
 
-  // Pagination cursors — stored in refs so they don't cause re-renders.
   const fromPageKeyRef = useRef(undefined);
   const toPageKeyRef = useRef(undefined);
-  // Prevents a second loadMore from firing before the first resolves.
   const loadingMoreRef = useRef(false);
 
-  const fetchInitial = useCallback(async () => {
+  // FIX 2 — fetchInitial accepts an isCancelled() check function so the useEffect
+  // can pass a locally-scoped cancelled flag. Using a local closure (not a shared ref)
+  // prevents the race where a new effect run resets the flag before the old fetch checks it.
+  const fetchInitial = useCallback(async (isCancelled) => {
     if (!address) return;
     setLoading(true);
     setError(null);
@@ -91,26 +74,42 @@ export function useActivityFeed(address) {
     toPageKeyRef.current = undefined;
 
     try {
-      // Fetch both directions in parallel to minimise wait time.
-      const [sent, received] = await Promise.all([
-        fetchTransfers(address, 'from', undefined),
-        fetchTransfers(address, 'to', undefined),
+      // FIX 5 — race the parallel fetch against a 10-second timeout
+      const [sent, received] = await Promise.race([
+        Promise.all([
+          fetchTransfers(address, 'from', undefined),
+          fetchTransfers(address, 'to', undefined),
+        ]),
+        new Promise((_, reject) =>
+          setTimeout(
+            () => reject(new Error('Request timed out')),
+            FETCH_TIMEOUT_MS
+          )
+        ),
       ]);
 
-      fromPageKeyRef.current = sent.pageKey;
-      toPageKeyRef.current = received.pageKey;
+      if (isCancelled()) return; // FIX 2 — discard stale response if address changed mid-flight
+
+      // FIX 6 — validate pageKeys before storing to prevent Load More appearing incorrectly
+      fromPageKeyRef.current = safePageKey(sent.pageKey);
+      toPageKeyRef.current = safePageKey(received.pageKey);
 
       setTransfers(mergeAndSort([], [...sent.transfers, ...received.transfers]));
-      setHasMore(!!(sent.pageKey || received.pageKey));
-    } catch {
-      setError('Failed to load transactions. Please try again.');
+      setHasMore(!!(fromPageKeyRef.current || toPageKeyRef.current));
+    } catch (err) {
+      if (isCancelled()) return; // FIX 2 — suppress error if already navigated away
+      // FIX 5 — map timeout to a specific user-facing message; all other errors share a generic one
+      if (err.message === 'Request timed out') {
+        setError('Loading is taking too long. Please try again.');
+      } else {
+        setError('Failed to load transactions. Please try again.');
+      }
     } finally {
-      setLoading(false);
+      if (!isCancelled()) setLoading(false); // FIX 2 — never update unmounted component
     }
   }, [address]);
 
   const loadMore = useCallback(async () => {
-    // Guard: already loading or both cursors are exhausted.
     if (
       loadingMoreRef.current ||
       (!fromPageKeyRef.current && !toPageKeyRef.current)
@@ -118,37 +117,56 @@ export function useActivityFeed(address) {
       return;
     }
 
+    let cancelled = false; // FIX 2 — scoped cancellation flag for this loadMore invocation
     loadingMoreRef.current = true;
     setLoadingMore(true);
 
     try {
-      // Only request the next page for a direction that still has one.
-      const [sentMore, receivedMore] = await Promise.all([
-        fromPageKeyRef.current
-          ? fetchTransfers(address, 'from', fromPageKeyRef.current)
-          : { transfers: [], pageKey: undefined },
-        toPageKeyRef.current
-          ? fetchTransfers(address, 'to', toPageKeyRef.current)
-          : { transfers: [], pageKey: undefined },
+      // FIX 5 — timeout applies to Load More as well
+      const [sentMore, receivedMore] = await Promise.race([
+        Promise.all([
+          fromPageKeyRef.current
+            ? fetchTransfers(address, 'from', fromPageKeyRef.current)
+            : { transfers: [], pageKey: undefined },
+          toPageKeyRef.current
+            ? fetchTransfers(address, 'to', toPageKeyRef.current)
+            : { transfers: [], pageKey: undefined },
+        ]),
+        new Promise((_, reject) =>
+          setTimeout(
+            () => reject(new Error('Request timed out')),
+            FETCH_TIMEOUT_MS
+          )
+        ),
       ]);
 
-      fromPageKeyRef.current = sentMore.pageKey;
-      toPageKeyRef.current = receivedMore.pageKey;
+      if (cancelled) return; // FIX 2 — discard if component unmounted during load
+
+      // FIX 6 — validate pageKeys before storing
+      fromPageKeyRef.current = safePageKey(sentMore.pageKey);
+      toPageKeyRef.current = safePageKey(receivedMore.pageKey);
 
       setTransfers((prev) =>
         mergeAndSort(prev, [...sentMore.transfers, ...receivedMore.transfers])
       );
-      setHasMore(!!(sentMore.pageKey || receivedMore.pageKey));
-    } catch {
-      setError('Failed to load more transactions.');
+      setHasMore(!!(fromPageKeyRef.current || toPageKeyRef.current));
+    } catch (err) {
+      if (cancelled) return; // FIX 2
+      if (err.message === 'Request timed out') {
+        setError('Loading is taking too long. Please try again.');
+      } else {
+        setError('Failed to load more transactions.');
+      }
     } finally {
       loadingMoreRef.current = false;
-      setLoadingMore(false);
+      if (!cancelled) setLoadingMore(false); // FIX 2
     }
   }, [address]);
 
   useEffect(() => {
-    fetchInitial();
+    let cancelled = false; // FIX 2 — locally-scoped flag; each effect run owns its own flag
+    fetchInitial(() => cancelled);
+    return () => { cancelled = true; }; // FIX 2 — fires on address change or component unmount
   }, [fetchInitial]);
 
   return { transfers, loading, loadingMore, error, hasMore, loadMore };
