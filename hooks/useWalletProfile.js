@@ -8,25 +8,37 @@ import {
   BADGE_DEFI_TX_RATIO,
   BADGE_NEW_USER_TX_COUNT,
 } from '@/lib/constants';
-import { walletAgeInDays } from '@/lib/utils';
+
+// FIX 6 — replaces walletAgeInDays; guards against null, NaN, and negative age from clock skew or future timestamps
+function safeWalletAge(firstTxDate) {
+  if (!firstTxDate) return null;
+  const ts = new Date(firstTxDate).getTime();
+  if (isNaN(ts)) return null;
+  const days = Math.floor((Date.now() - ts) / 86400000);
+  if (days < 0) return 0; // clamp to 0 — caused by clock skew or a future-dated first transaction
+  return days;
+}
 
 /**
  * Derives a wallet personality badge from profile data + recent transfer history.
  * Priority order: Whale > New User > NFT Collector > DeFi Degen > Regular User
  */
 function deriveBadge({ balance, txCount, transfers }) {
+  // FIX 8 — guard against null or non-array transfers; prevents NaN from ratio division on invalid input
+  const safeTxList = Array.isArray(transfers) ? transfers : [];
+
   if (parseFloat(balance) > BADGE_WHALE_ETH_THRESHOLD) {
     return { label: 'Whale', variant: 'whale' };
   }
   if (txCount < BADGE_NEW_USER_TX_COUNT) {
     return { label: 'New User', variant: 'new' };
   }
-  const total = transfers.length;
+  const total = safeTxList.length;
   if (total > 0) {
-    const nftTxs = transfers.filter(
+    const nftTxs = safeTxList.filter(
       (tx) => tx.category === TX_CATEGORIES.ERC721 || tx.category === TX_CATEGORIES.ERC1155
     ).length;
-    const erc20Txs = transfers.filter((tx) => tx.category === TX_CATEGORIES.ERC20).length;
+    const erc20Txs = safeTxList.filter((tx) => tx.category === TX_CATEGORIES.ERC20).length;
     if (nftTxs / total > BADGE_NFT_TX_RATIO) return { label: 'NFT Collector', variant: 'nft' };
     if (erc20Txs / total > BADGE_DEFI_TX_RATIO) return { label: 'DeFi Degen', variant: 'defi' };
   }
@@ -87,7 +99,7 @@ export function useWalletProfile(address) {
         setProfile({
           ...walletData,
           txCount,
-          walletAge: walletAgeInDays(walletData.firstTxTimestamp),
+          walletAge: safeWalletAge(walletData.firstTxTimestamp), // FIX 6 — safe calculation replaces walletAgeInDays
         });
         setBadge(
           deriveBadge({ balance: walletData.balance, txCount, transfers })

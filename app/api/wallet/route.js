@@ -10,8 +10,8 @@ import { getNftCount } from '@/lib/services/nft';
  *
  * Returns { balance, txCount, ensName, firstTxTimestamp, nftCount }
  *
- * Non-critical fields (ensName, firstTxTimestamp, nftCount) use individual
- * .catch() fallbacks so a failed ENS lookup never blocks the full response.
+ * FIX 2 — Promise.allSettled so one failing service never crashes the full response.
+ * Each field independently returns null on failure; the client renders '--' for null values.
  */
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -21,18 +21,21 @@ export async function GET(request) {
     return Response.json({ error: 'Invalid address' }, { status: 400 });
   }
 
-  try {
-    const [balance, txCount, ensName, firstTxTimestamp, nftCount] = await Promise.all([
-      getEthBalance(address),
-      getTransactionCount(address),
-      lookupEnsName(address).catch(() => null),
-      getFirstTransferTimestamp(address).catch(() => null),
-      getNftCount(address).catch(() => 0),
-    ]);
+  // FIX 2 — allSettled so getEthBalance or getTransactionCount failing doesn't return a 500 for all fields
+  const results = await Promise.allSettled([
+    getEthBalance(address),
+    getTransactionCount(address),
+    lookupEnsName(address),
+    getFirstTransferTimestamp(address),
+    getNftCount(address),
+  ]);
 
-    return Response.json({ balance, txCount, ensName, firstTxTimestamp, nftCount });
-  } catch {
-    // Never expose internal error details — return a generic message.
-    return Response.json({ error: 'Failed to fetch wallet data' }, { status: 500 });
-  }
+  // FIX 2 — extract each settled result; rejected promises produce null rather than an error response
+  const balance        = results[0].status === 'fulfilled' ? results[0].value : null;
+  const txCount        = results[1].status === 'fulfilled' ? results[1].value : null;
+  const ensName        = results[2].status === 'fulfilled' ? results[2].value : null;
+  const firstTxTimestamp = results[3].status === 'fulfilled' ? results[3].value : null;
+  const nftCount       = results[4].status === 'fulfilled' ? results[4].value : null;
+
+  return Response.json({ balance, txCount, ensName, firstTxTimestamp, nftCount });
 }
