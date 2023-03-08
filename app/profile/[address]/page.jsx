@@ -1,9 +1,10 @@
 import Link from 'next/link';
+import WalletProfile from '@/components/WalletProfile';
 import ActivityFeed from '@/components/ActivityFeed';
 import { truncateAddress } from '@/lib/utils';
 
 // Day 2 — ActivityFeed wired in.
-// Day 3 — WalletProfile replaces the address placeholder below.
+// Day 3 — WalletProfile replaces the address placeholder.
 // Day 4 — StatsDashboard added below the feed.
 
 export function generateMetadata({ params }) {
@@ -39,14 +40,9 @@ export default function ProfilePage({ params }) {
         Back to search
       </Link>
 
-      {/* Wallet header — WalletProfile component slots in here on Day 3 */}
-      <div className="mt-6 mb-8 rounded-xl border border-gray-800 bg-gray-900 px-5 py-4">
-        <p className="mb-1 text-xs font-medium uppercase tracking-widest text-gray-500">
-          Wallet
-        </p>
-        <p className="break-all font-mono text-sm text-gray-100 sm:text-base">
-          {address}
-        </p>
+      {/* Wallet Profile Header */}
+      <div className="mt-6 mb-8">
+        <WalletProfile address={address} />
       </div>
 
       {/* Activity Feed */}
