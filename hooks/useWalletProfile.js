@@ -78,12 +78,19 @@ export function useWalletProfile(address) {
 
         if (isCancelled()) return;
 
+        // Use total asset transfer activity (from + to) rather than the Ethereum nonce.
+        // eth_getTransactionCount returns only outbound TX count; test wallets that
+        // mostly receive funds would show 0, and the badge logic would always fire
+        // "New User" because the nonce never reaches the threshold.
+        const txCount = transfers.length;
+
         setProfile({
           ...walletData,
+          txCount,
           walletAge: walletAgeInDays(walletData.firstTxTimestamp),
         });
         setBadge(
-          deriveBadge({ balance: walletData.balance, txCount: walletData.txCount, transfers })
+          deriveBadge({ balance: walletData.balance, txCount, transfers })
         );
       } catch {
         if (isCancelled()) return;

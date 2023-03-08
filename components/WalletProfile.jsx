@@ -7,7 +7,7 @@ import Badge from '@/components/ui/Badge';
 import StatTile from '@/components/ui/StatTile';
 import Card from '@/components/ui/Card';
 import { SkeletonLine, SkeletonStatCard } from '@/components/ui/Skeleton';
-import { AVATAR_BASE_URL, ETHERSCAN_BASE_URL } from '@/lib/constants';
+import { AVATAR_BASE_URL, ETHERSCAN_BASE_URL, ALCHEMY_BADGE_TRANSFERS } from '@/lib/constants';
 import { truncateAddress } from '@/lib/utils';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
@@ -182,7 +182,14 @@ export default function WalletProfile({ address }) {
       {/* Stat tiles */}
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatTile label="ETH Balance" value={profile.balance} suffix="ETH" />
-        <StatTile label="Transactions" value={profile.txCount.toLocaleString()} />
+        <StatTile
+          label="Transactions"
+          value={
+            profile.txCount >= ALCHEMY_BADGE_TRANSFERS
+              ? `${ALCHEMY_BADGE_TRANSFERS}+`
+              : profile.txCount.toLocaleString()
+          }
+        />
         <StatTile label="NFTs Owned" value={profile.nftCount.toLocaleString()} />
         <StatTile label="Wallet Age" value={profile.walletAge} suffix="days" />
       </div>
