@@ -7,7 +7,8 @@ import {
 } from '@/lib/constants';
 import { groupTransfersByMonth, getLastNMonths } from '@/lib/utils';
 
-const FETCH_TIMEOUT_MS = 15_000;
+const FETCH_TIMEOUT_MS = 20_000;
+const STAGGER_DELAY_MS = 2_000;
 const TOP_TOKENS_LIMIT = 5;
 const MONTHS_TO_SHOW = 6;
 
@@ -70,9 +71,9 @@ function buildTopTokens(transfers) {
   const sums = {};
   for (const tx of transfers) {
     if (tx.category !== TX_CATEGORIES.ERC20) continue;
-    const asset = tx.asset || 'Unknown';
+    if (!tx.asset) continue;
     const val = parseFloat(tx.value) || 0;
-    sums[asset] = (sums[asset] || 0) + val;
+    sums[tx.asset] = (sums[tx.asset] || 0) + val;
   }
 
   return Object.entries(sums)
@@ -100,6 +101,11 @@ export function useStatsDashboard(address) {
       setError(null);
 
       try {
+        // Stagger: wait before firing so WalletProfile + ActivityFeed
+        // finish their Alchemy calls first, avoiding free-tier rate limits.
+        await new Promise((r) => setTimeout(r, STAGGER_DELAY_MS));
+        if (isCancelled()) return;
+
         const [fromData, toData] = await Promise.race([
           Promise.all([
             fetchDashboardTransfers(address, 'from'),

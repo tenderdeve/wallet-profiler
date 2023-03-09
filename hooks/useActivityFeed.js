@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 
 // FIX 5 — timeout threshold; requests exceeding this are rejected with a user-facing message
-const FETCH_TIMEOUT_MS = 10_000;
+const FETCH_TIMEOUT_MS = 20_000;
 
 // FIX 6 — rejects undefined/null/non-string pageKeys so the Load More button never
 // appears when there is no real next page to fetch

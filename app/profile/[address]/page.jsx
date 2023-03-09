@@ -18,7 +18,7 @@ export default function ProfilePage({ params }) {
   const { address } = params;
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+    <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
       {/* Back link */}
       <Link
         href="/"
@@ -46,20 +46,20 @@ export default function ProfilePage({ params }) {
         <WalletProfile address={address} />
       </div>
 
-      {/* Activity Feed */}
-      <section>
-        <h2 className="mb-4 text-base font-semibold text-gray-100">
-          Activity
-        </h2>
-        <ActivityFeed address={address} />
-      </section>
-
       {/* Stats Dashboard */}
-      <section className="mt-8">
+      <section>
         <h2 className="mb-4 text-base font-semibold text-gray-100">
           Stats
         </h2>
         <StatsDashboard address={address} />
+      </section>
+
+      {/* Activity Feed */}
+      <section className="mt-8">
+        <h2 className="mb-4 text-base font-semibold text-gray-100">
+          Activity
+        </h2>
+        <ActivityFeed address={address} />
       </section>
     </main>
   );

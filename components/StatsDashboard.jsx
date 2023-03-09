@@ -36,9 +36,9 @@ const TOOLTIP_STYLE = {
 function DashboardSkeleton() {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-      <Card><SkeletonBlock className="h-56 w-full" /></Card>
-      <Card><SkeletonBlock className="h-56 w-full" /></Card>
-      <Card><SkeletonBlock className="h-56 w-full" /></Card>
+      <Card><SkeletonBlock className="h-72 w-full" /></Card>
+      <Card><SkeletonBlock className="h-72 w-full" /></Card>
+      <Card><SkeletonBlock className="h-72 w-full" /></Card>
     </div>
   );
 }
@@ -47,7 +47,7 @@ function DashboardSkeleton() {
 
 function EmptyChart({ label }) {
   return (
-    <div className="flex h-56 items-center justify-center">
+    <div className="flex h-72 items-center justify-center">
       <p className="text-sm text-gray-500">No {label} data available</p>
     </div>
   );
@@ -60,8 +60,8 @@ function MonthlyChart({ data }) {
   if (!hasData) return <EmptyChart label="monthly activity" />;
 
   return (
-    <ResponsiveContainer width="100%" height={224}>
-      <BarChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
+    <ResponsiveContainer width="100%" height={264}>
+      <BarChart data={data} margin={{ top: 8, right: 12, bottom: 4, left: -8 }}>
         <XAxis dataKey="month" tick={AXIS_STYLE} tickLine={false} axisLine={false} />
         <YAxis tick={AXIS_STYLE} tickLine={false} axisLine={false} allowDecimals={false} />
         <Tooltip {...TOOLTIP_STYLE} cursor={{ fill: 'rgba(59,130,246,0.08)' }} />
@@ -77,20 +77,18 @@ function TypePieChart({ data }) {
   if (data.length === 0) return <EmptyChart label="transaction type" />;
 
   return (
-    <ResponsiveContainer width="100%" height={224}>
-      <PieChart>
+    <ResponsiveContainer width="100%" height={296}>
+      <PieChart margin={{ top: 8, right: 24, bottom: 0, left: 24 }}>
         <Pie
           data={data}
           dataKey="value"
           nameKey="name"
           cx="50%"
-          cy="50%"
-          outerRadius={70}
+          cy="42%"
+          outerRadius={72}
           innerRadius={36}
           paddingAngle={2}
-          label={({ name, percent }) =>
-            `${name} ${(percent * 100).toFixed(0)}%`
-          }
+          label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
           labelLine={false}
         >
           {data.map((_, i) => (
@@ -102,7 +100,7 @@ function TypePieChart({ data }) {
           verticalAlign="bottom"
           iconType="circle"
           iconSize={8}
-          wrapperStyle={{ fontSize: 12, color: '#9CA3AF' }}
+          formatter={(value) => <span style={{ color: '#D1D5DB', fontSize: 12 }}>{value}</span>}
         />
       </PieChart>
     </ResponsiveContainer>
@@ -115,8 +113,8 @@ function TopTokensChart({ data }) {
   if (data.length === 0) return <EmptyChart label="token" />;
 
   return (
-    <ResponsiveContainer width="100%" height={224}>
-      <BarChart data={data} layout="vertical" margin={{ top: 8, right: 8, bottom: 0, left: 4 }}>
+    <ResponsiveContainer width="100%" height={264}>
+      <BarChart data={data} layout="vertical" margin={{ top: 8, right: 16, bottom: 4, left: 4 }}>
         <XAxis type="number" tick={AXIS_STYLE} tickLine={false} axisLine={false} />
         <YAxis
           type="category"
@@ -124,7 +122,7 @@ function TopTokensChart({ data }) {
           tick={AXIS_STYLE}
           tickLine={false}
           axisLine={false}
-          width={72}
+          width={80}
         />
         <Tooltip {...TOOLTIP_STYLE} />
         <Bar dataKey="total" fill={CHART_COLORS.green} radius={[0, 4, 4, 0]} name="Total Sent" />

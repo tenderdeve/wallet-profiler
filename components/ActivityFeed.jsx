@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useActivityFeed } from '@/hooks/useActivityFeed';
 import { SkeletonFeedItem } from '@/components/ui/Skeleton';
 import Card from '@/components/ui/Card';
@@ -7,6 +8,8 @@ import { TX_CATEGORIES, ETHERSCAN_BASE_URL } from '@/lib/constants';
 import { truncateHash, timeAgo } from '@/lib/utils';
 
 const SKELETON_COUNT = 8;
+const INITIAL_DISPLAY_COUNT = 20;
+const LOAD_MORE_INCREMENT = 15;
 
 // ─── Security helpers ─────────────────────────────────────────────────────────
 
@@ -259,6 +262,7 @@ function FeedItem({ tx, address }) {
 export default function ActivityFeed({ address }) {
   const { transfers, loading, loadingMore, error, hasMore, loadMore } =
     useActivityFeed(address);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_DISPLAY_COUNT);
 
   // Loading — show skeleton rows while the first fetch is in-flight
   if (loading) {
@@ -297,19 +301,33 @@ export default function ActivityFeed({ address }) {
     );
   }
 
+  const visibleTransfers = transfers.slice(0, visibleCount);
+  const hasHiddenLocal = visibleCount < transfers.length;
+  const canFetchMore = hasMore && !hasHiddenLocal;
+
+  function handleLoadMore() {
+    if (hasHiddenLocal) {
+      setVisibleCount((prev) => prev + LOAD_MORE_INCREMENT);
+    } else if (canFetchMore) {
+      loadMore();
+      setVisibleCount((prev) => prev + LOAD_MORE_INCREMENT);
+    }
+  }
+
+  const showButton = hasHiddenLocal || canFetchMore;
+
   return (
     <Card className="p-0">
       <div className="divide-y divide-gray-800">
-        {transfers.map((tx) => (
+        {visibleTransfers.map((tx) => (
           <FeedItem key={tx.uniqueId} tx={tx} address={address} />
         ))}
       </div>
 
-      {/* FIX 6 — hasMore is only true when safePageKey() confirmed a real next-page cursor exists */}
-      {hasMore && (
+      {showButton && (
         <div className="border-t border-gray-800 px-5 py-4">
           <button
-            onClick={loadMore}
+            onClick={handleLoadMore}
             disabled={loadingMore}
             className="w-full rounded-lg border border-gray-700 py-2.5 text-sm font-medium text-gray-300 hover:border-blue-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
           >
