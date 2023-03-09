@@ -13,6 +13,7 @@ export async function GET(request) {
   const address = searchParams.get('address');
   const direction = searchParams.get('direction') ?? 'from';
   const pageKey = searchParams.get('pageKey') ?? undefined;
+  const maxCountParam = searchParams.get('maxCount');
 
   // Validate inputs before touching Alchemy.
   if (!address || !isAddress(address)) {
@@ -23,8 +24,18 @@ export async function GET(request) {
     return Response.json({ error: 'Invalid direction' }, { status: 400 });
   }
 
+  // Optional maxCount — clamped to 1–200 to prevent abuse.
+  let maxCount;
+  if (maxCountParam) {
+    const parsed = parseInt(maxCountParam, 10);
+    if (isNaN(parsed) || parsed < 1 || parsed > 200) {
+      return Response.json({ error: 'Invalid maxCount' }, { status: 400 });
+    }
+    maxCount = parsed;
+  }
+
   try {
-    const result = await getTransfers({ address, direction, pageKey });
+    const result = await getTransfers({ address, direction, pageKey, ...(maxCount ? { maxCount } : {}) });
     return Response.json(result);
   } catch {
     // Never expose internal error details — return a generic message.

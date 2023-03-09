@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import WalletProfile from '@/components/WalletProfile';
 import ActivityFeed from '@/components/ActivityFeed';
+import StatsDashboard from '@/components/StatsDashboard';
 import { truncateAddress } from '@/lib/utils';
 
 // Day 2 — ActivityFeed wired in.
@@ -53,7 +54,13 @@ export default function ProfilePage({ params }) {
         <ActivityFeed address={address} />
       </section>
 
-      {/* Stats Dashboard — added Day 4 */}
+      {/* Stats Dashboard */}
+      <section className="mt-8">
+        <h2 className="mb-4 text-base font-semibold text-gray-100">
+          Stats
+        </h2>
+        <StatsDashboard address={address} />
+      </section>
     </main>
   );
 }
