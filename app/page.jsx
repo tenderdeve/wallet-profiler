@@ -13,7 +13,7 @@ export default function HomePage() {
     // FIX 5 — Wraps all content so Alchemy-related render failures show a safe
     // fallback instead of a blank/crashed page.
     <ErrorBoundary>
-      <main className="flex min-h-screen flex-col items-center justify-center gap-10 px-4 py-16 sm:px-8">
+      <main className="flex min-h-[calc(100vh-57px)] flex-col items-center justify-center gap-10 px-4 py-16 sm:px-8">
         {/* Hero */}
         <div className="flex flex-col items-center gap-3 text-center">
           <div className="flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-xs font-medium text-blue-400">
