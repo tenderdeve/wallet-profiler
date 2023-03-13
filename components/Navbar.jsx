@@ -6,6 +6,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { isAddress } from 'ethers';
 import { FEATURED_WALLETS } from '@/lib/constants';
 import { truncateAddress } from '@/lib/utils';
+import ConnectWallet from '@/components/ConnectWallet';
 
 /**
  * Validates a search input as either a valid Ethereum address or an ENS name.
@@ -190,13 +191,7 @@ export default function Navbar() {
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
-          {/* Connect Wallet — placeholder until Day 6 */}
-          <button
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500 active:bg-blue-700 transition-colors"
-            aria-label="Connect wallet"
-          >
-            Connect Wallet
-          </button>
+          <ConnectWallet />
         </div>
 
         {/* Mobile: hamburger */}
@@ -223,12 +218,7 @@ export default function Navbar() {
         <div className="border-t border-gray-800 px-4 py-4 md:hidden">
           <div className="flex flex-col gap-3">
             {!isHome && <NavSearch onNavigate={() => setMenuOpen(false)} />}
-            <button
-              className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-500 active:bg-blue-700 transition-colors"
-              aria-label="Connect wallet"
-            >
-              Connect Wallet
-            </button>
+            <ConnectWallet compact />
           </div>
         </div>
       )}
