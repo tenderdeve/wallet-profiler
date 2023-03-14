@@ -56,9 +56,17 @@ export default function ProfilePage({ params }) {
 
       {/* Activity Feed */}
       <section className="mt-8">
-        <h2 className="mb-4 text-base font-semibold text-gray-100">
-          Activity
-        </h2>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-base font-semibold text-gray-100">
+            Activity
+          </h2>
+          <Link
+            href={`/profile/${address}/transactions`}
+            className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
+          >
+            View All →
+          </Link>
+        </div>
         <ActivityFeed address={address} />
       </section>
     </main>
