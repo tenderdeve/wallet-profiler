@@ -1,6 +1,7 @@
 import SearchBar from '@/components/SearchBar';
 import FeaturedWallets from '@/components/FeaturedWallets';
-import ErrorBoundary from '@/components/ErrorBoundary'; // FIX 5 — catches render errors from blockchain components
+import LandingAbout from '@/components/LandingAbout';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 export const metadata = {
   title: 'Wallet Profiler — Search',
@@ -33,7 +34,28 @@ export default function HomePage() {
 
         {/* Featured wallets — Server Component (static navigation cards) */}
         <FeaturedWallets />
+
+        {/* Learn More anchor */}
+        <a
+          href="#about"
+          className="mt-2 flex flex-col items-center gap-1 text-sm text-gray-500 hover:text-gray-300 transition-colors"
+        >
+          Learn More
+          <svg
+            className="h-4 w-4 animate-bounce"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            aria-hidden="true"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+          </svg>
+        </a>
       </main>
+
+      {/* About section — below the fold */}
+      <LandingAbout />
     </ErrorBoundary>
   );
 }
