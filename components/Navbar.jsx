@@ -7,6 +7,7 @@ import { isAddress } from 'ethers';
 import { FEATURED_WALLETS } from '@/lib/constants';
 import { truncateAddress } from '@/lib/utils';
 import ConnectWallet from '@/components/ConnectWallet';
+import ThemeSwitcher from '@/components/ThemeSwitcher';
 
 /**
  * Validates a search input as either a valid Ethereum address or an ENS name.
@@ -191,6 +192,7 @@ export default function Navbar() {
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
+          <ThemeSwitcher />
           <ConnectWallet />
         </div>
 
@@ -218,7 +220,12 @@ export default function Navbar() {
         <div className="border-t border-gray-800 px-4 py-4 md:hidden">
           <div className="flex flex-col gap-3">
             {!isHome && <NavSearch onNavigate={() => setMenuOpen(false)} />}
-            <ConnectWallet compact />
+            <div className="flex items-center gap-3">
+              <ThemeSwitcher />
+              <div className="flex-1">
+                <ConnectWallet compact />
+              </div>
+            </div>
           </div>
         </div>
       )}

@@ -5,3 +5,105 @@
 html {
   scroll-behavior: smooth;
 }
+
+/* ─── Theme System ─────────────────────────────────────────────────────────
+   Three themes: dark (default), dim, light.
+   CSS custom properties remap Tailwind's gray scale per theme.
+   Components continue using bg-gray-950, text-gray-100, etc. —
+   these now resolve to the active theme's palette.
+   ────────────────────────────────────────────────────────────────────────── */
+
+@layer base {
+  /* ── Dark (default) ─ deep blacks, high contrast ────────────────────── */
+  [data-theme="dark"],
+  :root {
+    --color-bg-base: #030712;       /* body */
+    --color-bg-surface: #111827;    /* cards, nav */
+    --color-bg-elevated: #1f2937;   /* hover, inputs */
+    --color-bg-muted: #374151;      /* subtle fills */
+    --color-border: #1f2937;
+    --color-border-subtle: #374151;
+    --color-text-primary: #f3f4f6;
+    --color-text-secondary: #9ca3af;
+    --color-text-muted: #6b7280;
+    --color-text-inverted: #030712;
+    --gradient-start: #030712;
+    --gradient-end: #0f172a;
+  }
+
+  /* ── Dim ─ muted navy, softer contrast ──────────────────────────────── */
+  [data-theme="dim"] {
+    --color-bg-base: #151a2e;
+    --color-bg-surface: #1c2340;
+    --color-bg-elevated: #253052;
+    --color-bg-muted: #2e3a5e;
+    --color-border: #253052;
+    --color-border-subtle: #2e3a5e;
+    --color-text-primary: #e2e8f0;
+    --color-text-secondary: #94a3b8;
+    --color-text-muted: #64748b;
+    --color-text-inverted: #151a2e;
+    --gradient-start: #151a2e;
+    --gradient-end: #1e293b;
+  }
+
+  /* ── Light ─ clean whites, dark text ────────────────────────────────── */
+  [data-theme="light"] {
+    --color-bg-base: #f8fafc;
+    --color-bg-surface: #ffffff;
+    --color-bg-elevated: #f1f5f9;
+    --color-bg-muted: #e2e8f0;
+    --color-border: #e2e8f0;
+    --color-border-subtle: #cbd5e1;
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #475569;
+    --color-text-muted: #94a3b8;
+    --color-text-inverted: #f8fafc;
+    --gradient-start: #f8fafc;
+    --gradient-end: #e2e8f0;
+  }
+
+  /* ── Apply theme variables to Tailwind overrides ────────────────────── */
+  body {
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    color: var(--color-text-primary);
+    min-height: 100vh;
+  }
+}
+
+/* ── Override Tailwind gray utilities with theme tokens ────────────────── */
+/* These selectors have higher specificity than Tailwind defaults so they
+   apply automatically when a data-theme is set. */
+
+@layer utilities {
+  /* Backgrounds */
+  [data-theme] .bg-gray-950 { background-color: var(--color-bg-base); }
+  [data-theme] .bg-gray-900 { background-color: var(--color-bg-surface); }
+  [data-theme] .bg-gray-900\/80 { background-color: color-mix(in srgb, var(--color-bg-surface) 80%, transparent); }
+  [data-theme] .bg-gray-900\/50 { background-color: color-mix(in srgb, var(--color-bg-surface) 50%, transparent); }
+  [data-theme] .bg-gray-800 { background-color: var(--color-bg-elevated); }
+  [data-theme] .bg-gray-800\/30 { background-color: color-mix(in srgb, var(--color-bg-elevated) 30%, transparent); }
+  [data-theme] .bg-gray-700 { background-color: var(--color-bg-muted); }
+
+  /* Navbar backdrop */
+  [data-theme] .bg-gray-950\/90 { background-color: color-mix(in srgb, var(--color-bg-base) 90%, transparent); }
+
+  /* Borders */
+  [data-theme] .border-gray-800 { border-color: var(--color-border); }
+  [data-theme] .border-gray-800\/50 { border-color: color-mix(in srgb, var(--color-border) 50%, transparent); }
+  [data-theme] .border-gray-700 { border-color: var(--color-border-subtle); }
+  [data-theme] .divide-gray-800 > :not([hidden]) ~ :not([hidden]) { border-color: var(--color-border); }
+
+  /* Text */
+  [data-theme] .text-gray-100 { color: var(--color-text-primary); }
+  [data-theme] .text-gray-200 { color: var(--color-text-primary); }
+  [data-theme] .text-gray-300 { color: var(--color-text-secondary); }
+  [data-theme] .text-gray-400 { color: var(--color-text-secondary); }
+  [data-theme] .text-gray-500 { color: var(--color-text-muted); }
+  [data-theme] .text-gray-600 { color: var(--color-text-muted); }
+  [data-theme] .placeholder-gray-500::placeholder { color: var(--color-text-muted); }
+
+  /* Skeleton pulse */
+  [data-theme] .animate-pulse.bg-gray-800,
+  [data-theme] .animate-pulse .bg-gray-800 { background-color: var(--color-bg-elevated); }
+}
