@@ -5,20 +5,9 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { isAddress } from 'ethers';
 import { FEATURED_WALLETS } from '@/lib/constants';
-import { truncateAddress } from '@/lib/utils';
+import { truncateAddress, isValidInput } from '@/lib/utils';
 import ConnectWallet from '@/components/ConnectWallet';
 import ThemeSwitcher from '@/components/ThemeSwitcher';
-
-/**
- * Validates a search input as either a valid Ethereum address or an ENS name.
- * Reuses the same logic as SearchBar's isValidInput.
- */
-function isValidInput(value) {
-  const trimmed = value.trim();
-  if (isAddress(trimmed)) return true;
-  if (trimmed.endsWith('.eth') && trimmed.length > 4) return true;
-  return false;
-}
 
 /**
  * Compact search bar for the navbar with a suggestions dropdown.

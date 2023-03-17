@@ -1,15 +1,31 @@
 import Link from 'next/link';
+import { isAddress } from 'ethers';
 import TransactionsTable from '@/components/TransactionsTable';
+import Card from '@/components/ui/Card';
 import { truncateAddress } from '@/lib/utils';
 
 export function generateMetadata({ params }) {
-  return {
-    title: `Transactions — ${truncateAddress(params.address)} — Wallet Profiler`,
-  };
+  const label = isAddress(params.address) ? truncateAddress(params.address) : 'Invalid';
+  return { title: `Transactions — ${label} — Wallet Profiler` };
 }
 
 export default function TransactionsPage({ params }) {
   const { address } = params;
+
+  if (!isAddress(address)) {
+    return (
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-100 transition-colors">
+          ← Back to search
+        </Link>
+        <Card className="mt-6">
+          <p role="alert" className="py-8 text-center text-sm text-red-400">
+            Invalid Ethereum address. Please check the URL and try again.
+          </p>
+        </Card>
+      </main>
+    );
+  }
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">

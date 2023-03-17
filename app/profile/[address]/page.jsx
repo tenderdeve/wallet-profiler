@@ -1,23 +1,42 @@
 import Link from 'next/link';
+import { isAddress } from 'ethers';
 import WalletProfile from '@/components/WalletProfile';
 import ActivityFeed from '@/components/ActivityFeed';
 import StatsDashboard from '@/components/StatsDashboard';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import Card from '@/components/ui/Card';
 import { truncateAddress } from '@/lib/utils';
 
-// Day 2 — ActivityFeed wired in.
-// Day 3 — WalletProfile replaces the address placeholder.
-// Day 4 — StatsDashboard added below the feed.
-
 export function generateMetadata({ params }) {
-  return {
-    title: `Wallet ${truncateAddress(params.address)} — Wallet Profiler`,
-  };
+  const label = isAddress(params.address)
+    ? truncateAddress(params.address)
+    : 'Invalid';
+  return { title: `Wallet ${label} — Wallet Profiler` };
 }
 
 export default function ProfilePage({ params }) {
   const { address } = params;
 
+  if (!isAddress(address)) {
+    return (
+      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-100 transition-colors"
+        >
+          ← Back to search
+        </Link>
+        <Card className="mt-6">
+          <p role="alert" className="py-8 text-center text-sm text-red-400">
+            Invalid Ethereum address. Please check the URL and try again.
+          </p>
+        </Card>
+      </main>
+    );
+  }
+
   return (
+    <ErrorBoundary>
     <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
       {/* Back link */}
       <Link
@@ -70,5 +89,6 @@ export default function ProfilePage({ params }) {
         <ActivityFeed address={address} />
       </section>
     </main>
+    </ErrorBoundary>
   );
 }

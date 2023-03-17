@@ -59,6 +59,23 @@ function formatValue(value) {
   return num.toFixed(4);
 }
 
+function isValidEthAddress(addr) {
+  return typeof addr === 'string' && /^0x[0-9a-fA-F]{40}$/.test(addr);
+}
+
+function sanitizeDisplayString(str) {
+  if (typeof str !== 'string') return '';
+  const cleaned = str.trim().replace(/[^a-zA-Z0-9 ._\-$%]/g, '');
+  return cleaned.length > 42 ? `${cleaned.slice(0, 42)}...` : cleaned;
+}
+
+// Guards against CSV formula injection — prefixes dangerous chars with a tab
+function safeCsvCell(value) {
+  const str = String(value);
+  if (/^[=+\-@\t\r]/.test(str)) return `\t${str}`;
+  return str;
+}
+
 function getTimestamp(tx) {
   return tx.metadata?.blockTimestamp
     ? new Date(tx.metadata.blockTimestamp).getTime()
@@ -110,7 +127,7 @@ function exportToCsv(transfers, walletAddress) {
   ]);
 
   const csv = [headers, ...rows]
-    .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+    .map((row) => row.map((cell) => `"${safeCsvCell(cell).replace(/"/g, '""')}"`).join(','))
     .join('\n');
 
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -372,6 +389,10 @@ export default function TransactionsTable({ address }) {
                   <th
                     className="cursor-pointer select-none whitespace-nowrap px-4 py-3 hover:text-gray-300 transition-colors"
                     onClick={() => toggleSort('time')}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSort('time'); } }}
+                    tabIndex={0}
+                    role="columnheader"
+                    aria-sort={getSortDir('time') === 'asc' ? 'ascending' : getSortDir('time') === 'desc' ? 'descending' : 'none'}
                   >
                     Time <SortIcon direction={getSortDir('time')} />
                   </th>
@@ -379,12 +400,20 @@ export default function TransactionsTable({ address }) {
                   <th
                     className="cursor-pointer select-none whitespace-nowrap px-4 py-3 hover:text-gray-300 transition-colors"
                     onClick={() => toggleSort('asset')}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSort('asset'); } }}
+                    tabIndex={0}
+                    role="columnheader"
+                    aria-sort={getSortDir('asset') === 'asc' ? 'ascending' : getSortDir('asset') === 'desc' ? 'descending' : 'none'}
                   >
                     Asset <SortIcon direction={getSortDir('asset')} />
                   </th>
                   <th
                     className="cursor-pointer select-none whitespace-nowrap px-4 py-3 text-right hover:text-gray-300 transition-colors"
                     onClick={() => toggleSort('value')}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSort('value'); } }}
+                    tabIndex={0}
+                    role="columnheader"
+                    aria-sort={getSortDir('value') === 'asc' ? 'ascending' : getSortDir('value') === 'desc' ? 'descending' : 'none'}
                   >
                     Value <SortIcon direction={getSortDir('value')} />
                   </th>
@@ -397,12 +426,14 @@ export default function TransactionsTable({ address }) {
                 {visibleTransfers.map((tx) => {
                   const action = getAction(tx, address);
                   const actionColor = getActionColor(tx, address);
-                  const asset = getAsset(tx);
+                  const asset = sanitizeDisplayString(getAsset(tx));
                   const value = formatValue(tx.value);
                   const time = tx.metadata?.blockTimestamp
                     ? timeAgo(tx.metadata.blockTimestamp)
                     : '-';
                   const validHash = isValidTxHash(tx.hash);
+                  const validFrom = isValidEthAddress(tx.from);
+                  const validTo = isValidEthAddress(tx.to);
 
                   return (
                     <tr
@@ -422,7 +453,7 @@ export default function TransactionsTable({ address }) {
                         {value}
                       </td>
                       <td className="whitespace-nowrap px-4 py-3">
-                        {tx.from ? (
+                        {validFrom ? (
                           <a
                             href={`${ETHERSCAN_BASE_URL}/address/${tx.from}`}
                             target="_blank"
@@ -433,11 +464,11 @@ export default function TransactionsTable({ address }) {
                             {truncateAddress(tx.from)}
                           </a>
                         ) : (
-                          <span className="text-gray-600">-</span>
+                          <span className="font-mono text-xs text-gray-600">{tx.from ? truncateAddress(tx.from) : '-'}</span>
                         )}
                       </td>
                       <td className="whitespace-nowrap px-4 py-3">
-                        {tx.to ? (
+                        {validTo ? (
                           <a
                             href={`${ETHERSCAN_BASE_URL}/address/${tx.to}`}
                             target="_blank"
@@ -448,7 +479,7 @@ export default function TransactionsTable({ address }) {
                             {truncateAddress(tx.to)}
                           </a>
                         ) : (
-                          <span className="text-gray-600">-</span>
+                          <span className="font-mono text-xs text-gray-600">{tx.to ? truncateAddress(tx.to) : '-'}</span>
                         )}
                       </td>
                       <td className="whitespace-nowrap px-4 py-3">

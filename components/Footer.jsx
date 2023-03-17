@@ -38,10 +38,10 @@ export default function Footer() {
             <span className="text-xs font-medium uppercase tracking-widest text-gray-500">
               Navigate
             </span>
-            <Link href="/" className="text-sm text-gray-400 hover:text-gray-200 transition-colors">
+            <Link href="/" className="w-fit text-sm text-gray-400 hover:text-gray-200 transition-colors">
               Home
             </Link>
-            <Link href="/#about" className="text-sm text-gray-400 hover:text-gray-200 transition-colors">
+            <Link href="/#about" className="w-fit text-sm text-gray-400 hover:text-gray-200 transition-colors">
               About
             </Link>
           </div>
@@ -55,7 +55,7 @@ export default function Footer() {
               href={ETHERSCAN_BASE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+              className="w-fit text-sm text-gray-400 hover:text-gray-200 transition-colors"
             >
               Sepolia Etherscan
             </a>
@@ -63,7 +63,7 @@ export default function Footer() {
               href="https://github.com/tenderdeve/wallet-profiler"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+              className="w-fit text-sm text-gray-400 hover:text-gray-200 transition-colors"
             >
               GitHub
             </a>

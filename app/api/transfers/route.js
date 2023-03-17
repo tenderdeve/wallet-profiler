@@ -12,7 +12,11 @@ export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const address = searchParams.get('address');
   const direction = searchParams.get('direction') ?? 'from';
-  const pageKey = searchParams.get('pageKey') ?? undefined;
+  const rawPageKey = searchParams.get('pageKey');
+  // Validate pageKey format — alphanumeric/base64, capped at 256 chars
+  const pageKey = rawPageKey && typeof rawPageKey === 'string' && rawPageKey.length <= 256 && /^[a-zA-Z0-9+/=_\-]+$/.test(rawPageKey)
+    ? rawPageKey
+    : undefined;
   const maxCountParam = searchParams.get('maxCount');
 
   // Validate inputs before touching Alchemy.

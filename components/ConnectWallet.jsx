@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
+import { isAddress } from 'ethers';
 import { useWallet } from '@/hooks/useWallet';
 import { truncateAddress } from '@/lib/utils';
 
@@ -155,12 +156,12 @@ function ConnectModal({ onClose, onConnect, isConnecting, error, hasProvider }) 
  */
 export default function ConnectWallet({ compact = false }) {
   const router = useRouter();
-  const { address, connect, disconnect, isConnecting, error, hasProvider } = useWallet();
+  const { address, connect, disconnect, isConnecting, error, hasProvider, wrongNetwork } = useWallet();
   const [modalOpen, setModalOpen] = useState(false);
 
   const handleConnect = useCallback(async () => {
     const connectedAddress = await connect();
-    if (connectedAddress) {
+    if (connectedAddress && isAddress(connectedAddress)) {
       setModalOpen(false);
       router.push(`/profile/${connectedAddress}`);
     }

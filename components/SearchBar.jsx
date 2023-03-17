@@ -3,27 +3,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { isAddress } from 'ethers';
-// FIX 1 — resolveEnsName removed from client imports.
-// ENS resolution now goes through /api/alchemy (server-side) so ALCHEMY_API_KEY
-// is never bundled into the client.
 import {
   LOCALSTORAGE_RECENT_SEARCHES,
   RECENT_SEARCHES_MAX,
 } from '@/lib/constants';
-
-/**
- * FIX 2 — Single validation function used everywhere input is checked.
- * Trims whitespace before testing so leading/trailing spaces never reach
- * the router or the API route.
- * @param {string} value
- * @returns {boolean}
- */
-function isValidInput(value) {
-  const trimmed = value.trim();
-  if (isAddress(trimmed)) return true;
-  if (trimmed.endsWith('.eth') && trimmed.length > 4) return true;
-  return false;
-}
+import { isValidInput } from '@/lib/utils';
 
 /**
  * Reads recent searches from localStorage.
