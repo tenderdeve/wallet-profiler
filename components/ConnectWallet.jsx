@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { isAddress } from 'ethers';
@@ -10,19 +10,45 @@ import { truncateAddress } from '@/lib/utils';
 // ─── Modal ──────────────────────────────────────────────────────────────────
 
 function ConnectModal({ onClose, onConnect, isConnecting, error, hasProvider }) {
+  const modalRef = useRef(null);
+
   // Close on Escape key
   useEffect(() => {
     function handleKey(e) {
       if (e.key === 'Escape') onClose();
+
+      // Focus trap — Tab/Shift+Tab cycle within modal
+      if (e.key === 'Tab' && modalRef.current) {
+        const focusable = modalRef.current.querySelectorAll(
+          'button, a[href], input, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     }
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
   }, [onClose]);
 
-  // Prevent body scroll while modal is open
+  // Prevent body scroll + auto-focus modal on open
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = ''; };
+    // Move focus into modal
+    const timer = setTimeout(() => {
+      if (modalRef.current) {
+        const first = modalRef.current.querySelector('button, a[href], input');
+        if (first) first.focus();
+      }
+    }, 50);
+    return () => { document.body.style.overflow = ''; clearTimeout(timer); };
   }, []);
 
   return createPortal(
@@ -39,13 +65,14 @@ function ConnectModal({ onClose, onConnect, isConnecting, error, hasProvider }) 
 
       {/* Modal */}
       <div
-        className="relative z-[101] mx-4 flex w-full max-w-lg overflow-hidden rounded-2xl border border-gray-700 bg-gray-900 shadow-2xl sm:max-w-xl"
+        ref={modalRef}
+        className="relative z-[101] mx-4 flex w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-gray-700 bg-gray-900 shadow-2xl sm:max-w-xl sm:flex-row"
         role="dialog"
         aria-modal="true"
         aria-label="Connect a Wallet"
       >
         {/* Left panel — wallet list */}
-        <div className="flex w-1/2 flex-col border-r border-gray-800 p-6">
+        <div className="flex w-full flex-col border-b border-gray-800 p-6 sm:w-1/2 sm:border-b-0 sm:border-r">
           <h2 className="text-lg font-bold text-gray-100">Connect a Wallet</h2>
           <p className="mt-1 text-xs font-medium uppercase tracking-widest text-gray-500">
             Recommended
@@ -96,8 +123,8 @@ function ConnectModal({ onClose, onConnect, isConnecting, error, hasProvider }) 
           )}
         </div>
 
-        {/* Right panel — info */}
-        <div className="flex w-1/2 flex-col items-center justify-center p-6 text-center">
+        {/* Right panel — info (hidden on very small screens, visible sm+) */}
+        <div className="hidden w-full flex-col items-center justify-center p-6 text-center sm:flex sm:w-1/2">
           <h3 className="text-lg font-bold text-gray-100">What is a Wallet?</h3>
 
           <div className="mt-6 flex flex-col gap-5">

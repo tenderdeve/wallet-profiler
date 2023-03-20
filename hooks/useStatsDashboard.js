@@ -6,6 +6,7 @@ import {
   TX_CATEGORIES,
 } from '@/lib/constants';
 import { groupTransfersByMonth, getLastNMonths } from '@/lib/utils';
+import { dedupedFetch } from '@/lib/fetchDedup';
 
 const FETCH_TIMEOUT_MS = 20_000;
 const STAGGER_DELAY_MS = 2_000;
@@ -18,11 +19,9 @@ const MONTHS_TO_SHOW = 6;
  */
 async function fetchDashboardTransfers(address, direction) {
   const maxCount = ALCHEMY_DASHBOARD_TRANSFERS / 2;
-  const res = await fetch(
+  return dedupedFetch(
     `/api/transfers?address=${encodeURIComponent(address)}&direction=${direction}&maxCount=${maxCount}`
-  );
-  if (!res.ok) return { transfers: [] };
-  return res.json();
+  ).catch(() => ({ transfers: [] }));
 }
 
 /**

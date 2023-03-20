@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { dedupedFetch } from '@/lib/fetchDedup';
 
-// FIX 5 — timeout threshold; requests exceeding this are rejected with a user-facing message
 const FETCH_TIMEOUT_MS = 20_000;
 
 // FIX 6 — rejects undefined/null/non-string pageKeys so the Load More button never
@@ -19,9 +19,9 @@ async function fetchTransfers(address, direction, pageKey) {
   const params = new URLSearchParams({ address, direction });
   if (pageKey) params.set('pageKey', pageKey);
 
-  const res = await fetch(`/api/transfers?${params}`);
-  if (!res.ok) throw new Error('Failed to fetch transfers');
-  return res.json();
+  // dedupedFetch deduplicates in-flight requests — if useWalletProfile
+  // is fetching the same URL simultaneously, only one HTTP call fires.
+  return dedupedFetch(`/api/transfers?${params}`);
 }
 
 /**

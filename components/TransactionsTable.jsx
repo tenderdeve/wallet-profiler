@@ -139,6 +139,46 @@ function exportToCsv(transfers, walletAddress) {
   URL.revokeObjectURL(url);
 }
 
+// ─── Mobile card for small screens ──────────────────────────────────────────
+
+function MobileCard({ tx, address: walletAddress }) {
+  const action = getAction(tx, walletAddress);
+  const actionColor = getActionColor(tx, walletAddress);
+  const asset = sanitizeDisplayString(getAsset(tx));
+  const value = formatValue(tx.value);
+  const time = tx.metadata?.blockTimestamp ? timeAgo(tx.metadata.blockTimestamp) : '-';
+  const validHash = isValidTxHash(tx.hash);
+
+  return (
+    <div className="border-b border-gray-800/50 px-4 py-3">
+      <div className="flex items-center justify-between">
+        <span className={`text-sm font-medium ${actionColor}`}>{action}</span>
+        <span className="text-xs text-gray-500">{time}</span>
+      </div>
+      <div className="mt-1.5 flex items-center justify-between">
+        <span className="text-sm text-gray-200">{asset || '-'}</span>
+        {value !== '-' && (
+          <span className="font-mono text-sm text-gray-200">{value}</span>
+        )}
+      </div>
+      <div className="mt-1.5 flex items-center gap-3 text-xs text-gray-500">
+        {tx.from && <span className="font-mono">From: {truncateAddress(tx.from)}</span>}
+        {tx.to && <span className="font-mono">To: {truncateAddress(tx.to)}</span>}
+      </div>
+      {validHash && (
+        <a
+          href={`${ETHERSCAN_BASE_URL}/tx/${tx.hash}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-1 inline-block font-mono text-xs text-gray-500 hover:text-blue-400 transition-colors"
+        >
+          {truncateHash(tx.hash)}
+        </a>
+      )}
+    </div>
+  );
+}
+
 // ─── Skeleton ───────────────────────────────────────────────────────────────
 
 function TableSkeleton() {
@@ -382,7 +422,16 @@ export default function TransactionsTable({ address }) {
             No transactions match the current filters.
           </p>
         ) : (
-          <div className="overflow-x-auto">
+          <>
+          {/* Mobile card layout */}
+          <div className="md:hidden">
+            {visibleTransfers.map((tx) => (
+              <MobileCard key={tx.uniqueId} tx={tx} address={address} />
+            ))}
+          </div>
+
+          {/* Desktop table layout */}
+          <div className="hidden overflow-x-auto md:block">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-800 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
@@ -503,6 +552,7 @@ export default function TransactionsTable({ address }) {
               </tbody>
             </table>
           </div>
+          </>
         )}
 
         {/* Pagination */}

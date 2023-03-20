@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { dedupedFetch } from '@/lib/fetchDedup';
 import {
   TX_CATEGORIES,
   BADGE_WHALE_ETH_THRESHOLD,
@@ -57,12 +58,10 @@ async function fetchWalletData(address) {
  * Gracefully returns empty array if either direction fails.
  */
 async function fetchRecentTransfers(address) {
-  const [fromRes, toRes] = await Promise.all([
-    fetch(`/api/transfers?address=${encodeURIComponent(address)}&direction=from`),
-    fetch(`/api/transfers?address=${encodeURIComponent(address)}&direction=to`),
+  const [fromData, toData] = await Promise.all([
+    dedupedFetch(`/api/transfers?address=${encodeURIComponent(address)}&direction=from`).catch(() => ({ transfers: [] })),
+    dedupedFetch(`/api/transfers?address=${encodeURIComponent(address)}&direction=to`).catch(() => ({ transfers: [] })),
   ]);
-  const fromData = fromRes.ok ? await fromRes.json() : { transfers: [] };
-  const toData = toRes.ok ? await toRes.json() : { transfers: [] };
   return [...(fromData.transfers ?? []), ...(toData.transfers ?? [])];
 }
 
