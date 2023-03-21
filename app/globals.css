@@ -103,6 +103,24 @@ html {
   [data-theme] .text-gray-600 { color: var(--color-text-muted); }
   [data-theme] .placeholder-gray-500::placeholder { color: var(--color-text-muted); }
 
+  /* Hover backgrounds */
+  [data-theme] .hover\:bg-gray-800:hover { background-color: var(--color-bg-elevated); }
+  [data-theme] .hover\:bg-gray-800\/30:hover { background-color: color-mix(in srgb, var(--color-bg-elevated) 30%, transparent); }
+
+  /* Hover borders */
+  [data-theme] .hover\:border-gray-500:hover { border-color: var(--color-text-muted); }
+  [data-theme] .hover\:border-gray-700:hover { border-color: var(--color-border-subtle); }
+
+  /* Hover text */
+  [data-theme] .hover\:text-gray-100:hover { color: var(--color-text-primary); }
+  [data-theme] .hover\:text-gray-200:hover { color: var(--color-text-primary); }
+  [data-theme] .hover\:text-gray-300:hover { color: var(--color-text-secondary); }
+  [data-theme] .hover\:text-gray-400:hover { color: var(--color-text-secondary); }
+
+  /* Badge opacity variants */
+  [data-theme] .bg-gray-500\/20 { background-color: color-mix(in srgb, var(--color-text-muted) 20%, transparent); }
+  [data-theme] .border-gray-500\/30 { border-color: color-mix(in srgb, var(--color-text-muted) 30%, transparent); }
+
   /* Skeleton pulse */
   [data-theme] .animate-pulse.bg-gray-800,
   [data-theme] .animate-pulse .bg-gray-800 { background-color: var(--color-bg-elevated); }

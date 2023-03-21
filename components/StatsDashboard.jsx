@@ -19,16 +19,16 @@ import { CHART_COLORS, PIE_CHART_COLORS } from '@/lib/constants';
 
 // ─── Chart theme ────────────────────────────────────────────────────────────
 
-const AXIS_STYLE = { fontSize: 12, fill: '#9CA3AF' };
+const AXIS_STYLE = { fontSize: 12, fill: 'var(--color-text-muted)' };
 const TOOLTIP_STYLE = {
   contentStyle: {
-    backgroundColor: '#1F2937',
-    border: '1px solid #374151',
+    backgroundColor: 'var(--color-bg-elevated)',
+    border: '1px solid var(--color-border-subtle)',
     borderRadius: 8,
     fontSize: 13,
   },
-  labelStyle: { color: '#F3F4F6' },
-  itemStyle: { color: '#D1D5DB' },
+  labelStyle: { color: 'var(--color-text-primary)' },
+  itemStyle: { color: 'var(--color-text-secondary)' },
 };
 
 // ─── Skeleton ───────────────────────────────────────────────────────────────
@@ -100,7 +100,7 @@ function TypePieChart({ data }) {
           verticalAlign="bottom"
           iconType="circle"
           iconSize={8}
-          formatter={(value) => <span style={{ color: '#D1D5DB', fontSize: 12 }}>{value}</span>}
+          formatter={(value) => <span style={{ color: 'var(--color-text-secondary)', fontSize: 12 }}>{value}</span>}
         />
       </PieChart>
     </ResponsiveContainer>

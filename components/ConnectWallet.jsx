@@ -83,7 +83,7 @@ function ConnectModal({ onClose, onConnect, isConnecting, error, hasProvider }) 
             <button
               onClick={onConnect}
               disabled={isConnecting}
-              className="flex items-center gap-3 rounded-xl border border-gray-700 bg-gray-800 px-4 py-3 text-left hover:border-blue-500 hover:bg-gray-750 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-3 rounded-xl border border-gray-700 bg-gray-800 px-4 py-3 text-left hover:border-blue-500 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white">
                 <svg viewBox="0 0 35 33" className="h-6 w-6" aria-hidden="true">
