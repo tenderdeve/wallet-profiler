@@ -8,62 +8,72 @@ html {
 
 /* ─── Theme System ─────────────────────────────────────────────────────────
    Three themes: dark (default), dim, light.
+   Primary accent: Lochmara blue (#1682DE) palette.
    CSS custom properties remap Tailwind's gray scale per theme.
    Components continue using bg-gray-950, text-gray-100, etc. —
    these now resolve to the active theme's palette.
    ────────────────────────────────────────────────────────────────────────── */
 
 @layer base {
-  /* ── Dark (default) ─ deep blacks, high contrast ────────────────────── */
+  /* ── Dark (default) ─ neutral black/gray, Lochmara blue accents ──── */
   [data-theme="dark"],
   :root {
-    --color-bg-base: #030712;       /* body */
-    --color-bg-surface: #111827;    /* cards, nav */
-    --color-bg-elevated: #1f2937;   /* hover, inputs */
-    --color-bg-muted: #374151;      /* subtle fills */
-    --color-border: #1f2937;
-    --color-border-subtle: #374151;
-    --color-text-primary: #f3f4f6;
-    --color-text-secondary: #9ca3af;
-    --color-text-muted: #6b7280;
-    --color-text-inverted: #030712;
-    --gradient-start: #030712;
-    --gradient-end: #0f172a;
+    --color-bg-base: #09090b;       /* body — near black */
+    --color-bg-surface: #18181b;    /* cards, nav — zinc-900 */
+    --color-bg-elevated: #27272a;   /* hover, inputs — zinc-800 */
+    --color-bg-muted: #3f3f46;      /* subtle fills — zinc-700 */
+    --color-border: #27272a;        /* zinc-800 */
+    --color-border-subtle: #3f3f46; /* zinc-700 */
+    --color-text-primary: #fafafa;  /* zinc-50 */
+    --color-text-secondary: #a1a1aa; /* zinc-400 */
+    --color-text-muted: #71717a;    /* zinc-500 */
+    --color-text-inverted: #09090b;
+    --gradient-start: #09090b;
+    --gradient-end: #18181b;
+    --color-accent: #1682DE;
+    --color-accent-hover: #3FA0F1;
+    --color-accent-active: #0966C0;
   }
 
-  /* ── Dim ─ muted navy, softer contrast ──────────────────────────────── */
+  /* ── Dim ─ softer dark, slight warmth ───────────────────────────────── */
   [data-theme="dim"] {
-    --color-bg-base: #151a2e;
-    --color-bg-surface: #1c2340;
-    --color-bg-elevated: #253052;
-    --color-bg-muted: #2e3a5e;
-    --color-border: #253052;
-    --color-border-subtle: #2e3a5e;
-    --color-text-primary: #e2e8f0;
-    --color-text-secondary: #94a3b8;
-    --color-text-muted: #64748b;
-    --color-text-inverted: #151a2e;
-    --gradient-start: #151a2e;
-    --gradient-end: #1e293b;
+    --color-bg-base: #111113;
+    --color-bg-surface: #1c1c20;
+    --color-bg-elevated: #2a2a30;
+    --color-bg-muted: #3a3a42;
+    --color-border: #2a2a30;
+    --color-border-subtle: #3a3a42;
+    --color-text-primary: #ebebef;
+    --color-text-secondary: #9898a4;
+    --color-text-muted: #6e6e7a;
+    --color-text-inverted: #111113;
+    --gradient-start: #111113;
+    --gradient-end: #1c1c20;
+    --color-accent: #1682DE;
+    --color-accent-hover: #3FA0F1;
+    --color-accent-active: #0966C0;
   }
 
-  /* ── Light ─ clean whites, dark text ────────────────────────────────── */
+  /* ── Light ─ clean white/gray, blue accent only ─────────────────────── */
   [data-theme="light"] {
-    --color-bg-base: #f8fafc;
-    --color-bg-surface: #ffffff;
-    --color-bg-elevated: #f1f5f9;
-    --color-bg-muted: #e2e8f0;
-    --color-border: #e2e8f0;
-    --color-border-subtle: #cbd5e1;
-    --color-text-primary: #0f172a;
-    --color-text-secondary: #475569;
-    --color-text-muted: #94a3b8;
-    --color-text-inverted: #f8fafc;
-    --gradient-start: #f8fafc;
-    --gradient-end: #e2e8f0;
+    --color-bg-base: #f4f4f5;       /* body — zinc-100 */
+    --color-bg-surface: #ffffff;     /* cards — pure white */
+    --color-bg-elevated: #e4e4e7;   /* hover, inputs — zinc-200 */
+    --color-bg-muted: #d4d4d8;      /* subtle fills — zinc-300 */
+    --color-border: #e4e4e7;        /* zinc-200 */
+    --color-border-subtle: #d4d4d8; /* zinc-300 */
+    --color-text-primary: #18181b;  /* zinc-900 */
+    --color-text-secondary: #52525b; /* zinc-600 */
+    --color-text-muted: #a1a1aa;    /* zinc-400 */
+    --color-text-inverted: #fafafa;
+    --gradient-start: #f4f4f5;
+    --gradient-end: #e4e4e7;
+    --color-accent: #1682DE;
+    --color-accent-hover: #0966C0;
+    --color-accent-active: #09519B;
   }
 
-  /* ── Apply theme variables to Tailwind overrides ────────────────────── */
+  /* ── Apply theme variables ──────────────────────────────────────────── */
   body {
     background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
     color: var(--color-text-primary);
@@ -71,9 +81,7 @@ html {
   }
 }
 
-/* ── Override Tailwind gray utilities with theme tokens ────────────────── */
-/* These selectors have higher specificity than Tailwind defaults so they
-   apply automatically when a data-theme is set. */
+/* ── Override Tailwind utilities with theme tokens ─────────────────────── */
 
 @layer utilities {
   /* Backgrounds */
@@ -84,9 +92,21 @@ html {
   [data-theme] .bg-gray-800 { background-color: var(--color-bg-elevated); }
   [data-theme] .bg-gray-800\/30 { background-color: color-mix(in srgb, var(--color-bg-elevated) 30%, transparent); }
   [data-theme] .bg-gray-700 { background-color: var(--color-bg-muted); }
-
-  /* Navbar backdrop */
   [data-theme] .bg-gray-950\/90 { background-color: color-mix(in srgb, var(--color-bg-base) 90%, transparent); }
+
+  /* Primary accent */
+  [data-theme] .bg-blue-600 { background-color: var(--color-accent); }
+  [data-theme] .hover\:bg-blue-500:hover { background-color: var(--color-accent-hover); }
+  [data-theme] .active\:bg-blue-700:active { background-color: var(--color-accent-active); }
+  [data-theme] .hover\:border-blue-500:hover { border-color: var(--color-accent); }
+  [data-theme] .focus-within\:border-blue-500:focus-within { border-color: var(--color-accent); }
+  [data-theme] .focus-within\:ring-blue-500:focus-within { --tw-ring-color: var(--color-accent); }
+  [data-theme] .text-blue-400 { color: var(--color-accent-hover); }
+  [data-theme] .hover\:text-blue-400:hover { color: var(--color-accent-hover); }
+  [data-theme] .hover\:text-blue-300:hover { color: var(--color-accent-hover); }
+  [data-theme] .border-blue-500\/30 { border-color: color-mix(in srgb, var(--color-accent) 30%, transparent); }
+  [data-theme] .bg-blue-500\/10 { background-color: color-mix(in srgb, var(--color-accent) 10%, transparent); }
+  [data-theme] .bg-blue-600\/10 { background-color: color-mix(in srgb, var(--color-accent) 10%, transparent); }
 
   /* Borders */
   [data-theme] .border-gray-800 { border-color: var(--color-border); }
@@ -120,6 +140,10 @@ html {
   /* Badge opacity variants */
   [data-theme] .bg-gray-500\/20 { background-color: color-mix(in srgb, var(--color-text-muted) 20%, transparent); }
   [data-theme] .border-gray-500\/30 { border-color: color-mix(in srgb, var(--color-text-muted) 30%, transparent); }
+
+  /* White text on accent buttons — must stay white in all themes */
+  [data-theme] .bg-blue-600 .text-white,
+  [data-theme] .bg-blue-600.text-white { color: #ffffff; }
 
   /* Skeleton pulse */
   [data-theme] .animate-pulse.bg-gray-800,
