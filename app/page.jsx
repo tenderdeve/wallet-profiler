@@ -14,8 +14,9 @@ export const metadata = {
 export default function HomePage() {
   return (
     <ErrorBoundary>
-      <main className="hero-glow noise-overlay relative flex min-h-[calc(100vh-57px)] flex-col items-center justify-center gap-10 px-4 py-16 sm:px-8">
-        {/* Floating wallet avatars — blurred, sharpen on hover, link to profiles */}
+      {/* Hero — featured wallets + preview sit at the bottom, preview cuts off at the fold */}
+      <main className="hero-glow noise-overlay relative flex min-h-[calc(100vh-57px)] flex-col items-center gap-10 px-4 pt-[16vh] pb-16 sm:px-8">
+        {/* Floating wallet avatars */}
         <FloatingWallets />
 
         {/* Hero */}
@@ -33,31 +34,16 @@ export default function HomePage() {
           <SearchBar />
         </div>
 
-        {/* Featured wallets */}
-        <div className="animate-fade-in-up delay-4 relative z-10">
+        {/* Featured wallets + preview — bottom of hero, intentionally overflows the fold */}
+        <div className="animate-fade-in-up delay-4 relative z-10 w-full max-w-3xl">
           <FeaturedWallets />
         </div>
-
-        {/* Learn More anchor */}
-        <a
-          href="#about"
-          className="animate-fade-in delay-5 relative z-10 mt-2 flex flex-col items-center gap-1 text-sm text-gray-500 hover:text-gray-300 transition-colors"
-        >
-          Learn More
-          <svg
-            className="h-4 w-4 animate-bounce"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            aria-hidden="true"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
-          </svg>
-        </a>
       </main>
 
-      {/* About section — below the fold */}
+      {/* Spacer between hero and about */}
+      <div className="h-16" />
+
+      {/* About section */}
       <LandingAbout />
     </ErrorBoundary>
   );

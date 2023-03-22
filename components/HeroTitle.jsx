@@ -54,11 +54,13 @@ const WORDS = [
 export default function HeroTitle() {
   const [index, setIndex] = useState(0);
 
+  // Rotate words on a fixed interval — no dependencies, runs once on mount
   useEffect(() => {
-    const timer = setInterval(() => {
+    const id = setInterval(() => {
       setIndex((prev) => (prev + 1) % WORDS.length);
     }, ROTATE_INTERVAL_MS);
-    return () => clearInterval(timer);
+    return () => clearInterval(id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -164,6 +164,9 @@ export default function Navbar() {
           <span className="text-sm font-bold text-gray-100 tracking-tight">
             Wallet Profiler
           </span>
+          <span className="hidden sm:inline-flex items-center rounded-full border border-blue-500/30 bg-blue-500/10 px-2.5 py-0.5 text-[10px] font-medium text-blue-400">
+            Sepolia Testnet
+          </span>
         </Link>
 
         {/* Desktop: search + connect */}
