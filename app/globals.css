@@ -15,67 +15,73 @@ html {
    ────────────────────────────────────────────────────────────────────────── */
 
 @layer base {
-  /* ── Dark (default) ─ neutral black/gray, Lochmara blue accents ──── */
+  /* ── Dark (default) — Midnight Galaxy: cosmic blacks + indigo undertone ── */
   [data-theme="dark"],
   :root {
-    --color-bg-base: #09090b;       /* body — near black */
-    --color-bg-surface: #18181b;    /* cards, nav — zinc-900 */
-    --color-bg-elevated: #27272a;   /* hover, inputs — zinc-800 */
-    --color-bg-muted: #3f3f46;      /* subtle fills — zinc-700 */
-    --color-border: #27272a;        /* zinc-800 */
-    --color-border-subtle: #3f3f46; /* zinc-700 */
-    --color-text-primary: #fafafa;  /* zinc-50 */
-    --color-text-secondary: #a1a1aa; /* zinc-400 */
-    --color-text-muted: #71717a;    /* zinc-500 */
-    --color-text-inverted: #09090b;
-    --gradient-start: #09090b;
-    --gradient-end: #18181b;
+    --color-bg-base: #06060c;       /* body — deep cosmic black */
+    --color-bg-surface: #12121e;    /* cards, nav — indigo-tinted dark */
+    --color-bg-elevated: #1e1e2e;   /* hover, inputs */
+    --color-bg-muted: #2e2e42;      /* subtle fills */
+    --color-border: #1e1e2e;
+    --color-border-subtle: #2e2e42;
+    --color-text-primary: #eeeef4;  /* cool white */
+    --color-text-secondary: #9898b0;
+    --color-text-muted: #6868808;
+    --color-text-inverted: #06060c;
+    --gradient-start: #06060c;
+    --gradient-mid: #0a0a18;        /* mid-stop for 3-point gradient */
+    --gradient-end: #10101e;
     --color-accent: #1682DE;
     --color-accent-hover: #3FA0F1;
     --color-accent-active: #0966C0;
+    --color-accent-secondary: #6366f1; /* subtle violet for depth */
   }
 
-  /* ── Dim ─ softer dark, slight warmth ───────────────────────────────── */
+  /* ── Dim — softer galaxy, warmer nebula tones ──────────────────────── */
   [data-theme="dim"] {
-    --color-bg-base: #111113;
-    --color-bg-surface: #1c1c20;
-    --color-bg-elevated: #2a2a30;
-    --color-bg-muted: #3a3a42;
-    --color-border: #2a2a30;
-    --color-border-subtle: #3a3a42;
-    --color-text-primary: #ebebef;
-    --color-text-secondary: #9898a4;
-    --color-text-muted: #6e6e7a;
-    --color-text-inverted: #111113;
-    --gradient-start: #111113;
-    --gradient-end: #1c1c20;
+    --color-bg-base: #0e0e16;
+    --color-bg-surface: #181824;
+    --color-bg-elevated: #242436;
+    --color-bg-muted: #343448;
+    --color-border: #242436;
+    --color-border-subtle: #343448;
+    --color-text-primary: #e4e4ee;
+    --color-text-secondary: #9292a8;
+    --color-text-muted: #6868808;
+    --color-text-inverted: #0e0e16;
+    --gradient-start: #0e0e16;
+    --gradient-mid: #121220;
+    --gradient-end: #181824;
     --color-accent: #1682DE;
     --color-accent-hover: #3FA0F1;
     --color-accent-active: #0966C0;
+    --color-accent-secondary: #6366f1;
   }
 
-  /* ── Light ─ clean white/gray, blue accent only ─────────────────────── */
+  /* ── Light — frosted galaxy: cool whites with subtle violet shimmer ── */
   [data-theme="light"] {
-    --color-bg-base: #f4f4f5;       /* body — zinc-100 */
+    --color-bg-base: #f2f2f8;       /* body — cool white with violet tint */
     --color-bg-surface: #ffffff;     /* cards — pure white */
-    --color-bg-elevated: #e4e4e7;   /* hover, inputs — zinc-200 */
-    --color-bg-muted: #d4d4d8;      /* subtle fills — zinc-300 */
-    --color-border: #e4e4e7;        /* zinc-200 */
-    --color-border-subtle: #d4d4d8; /* zinc-300 */
-    --color-text-primary: #18181b;  /* zinc-900 */
-    --color-text-secondary: #52525b; /* zinc-600 */
-    --color-text-muted: #a1a1aa;    /* zinc-400 */
-    --color-text-inverted: #fafafa;
-    --gradient-start: #f4f4f5;
-    --gradient-end: #e4e4e7;
+    --color-bg-elevated: #e6e6f0;   /* hover — cool gray */
+    --color-bg-muted: #d4d4e0;      /* subtle fills */
+    --color-border: #e0e0ec;
+    --color-border-subtle: #d0d0de;
+    --color-text-primary: #14141e;
+    --color-text-secondary: #4a4a60;
+    --color-text-muted: #9090a8;
+    --color-text-inverted: #f2f2f8;
+    --gradient-start: #f2f2f8;
+    --gradient-mid: #eeeef6;
+    --gradient-end: #e6e6f0;
     --color-accent: #1682DE;
     --color-accent-hover: #0966C0;
     --color-accent-active: #09519B;
+    --color-accent-secondary: #6366f1;
   }
 
   /* ── Apply theme variables ──────────────────────────────────────────── */
   body {
-    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    background: linear-gradient(160deg, var(--gradient-start), var(--gradient-mid, var(--gradient-start)) 40%, var(--gradient-end));
     color: var(--color-text-primary);
     min-height: 100vh;
   }
@@ -148,6 +154,21 @@ html {
   /* Skeleton pulse */
   [data-theme] .animate-pulse.bg-gray-800,
   [data-theme] .animate-pulse .bg-gray-800 { background-color: var(--color-bg-elevated); }
+}
+
+/* ─── Recharts theme ───────────────────────────────────────────────────────── */
+/* Recharts renders SVG <text> with fill — CSS vars don't resolve inside SVG.
+   Setting color on the container lets fill:currentColor inherit the theme. */
+.recharts-wrapper,
+.recharts-surface {
+  color: var(--color-text-muted);
+}
+.recharts-cartesian-axis-tick-value,
+.recharts-label {
+  fill: var(--color-text-muted) !important;
+}
+.recharts-legend-item-text {
+  color: var(--color-text-secondary) !important;
 }
 
 /* ─── Animations & Motion ──────────────────────────────────────────────────── */
@@ -238,7 +259,7 @@ html {
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 30%, transparent), transparent 60%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 25%, transparent), color-mix(in srgb, var(--color-accent-secondary, #6366f1) 12%, transparent) 50%, transparent 80%);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -246,22 +267,36 @@ html {
   pointer-events: none;
 }
 
-/* Hero background glow orb */
+/* Hero background — dual cosmic glow orbs (blue + violet) */
 .hero-glow {
   position: relative;
+  overflow: hidden;
 }
-.hero-glow::before {
+.hero-glow::before,
+.hero-glow::after {
   content: '';
   position: absolute;
-  top: 20%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 600px;
-  height: 300px;
-  background: radial-gradient(ellipse, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 70%);
   pointer-events: none;
   z-index: 0;
+  border-radius: 50%;
+}
+.hero-glow::before {
+  top: 15%;
+  left: 45%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 350px;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent 70%);
   animation: glow-pulse 4s ease-in-out infinite;
+}
+.hero-glow::after {
+  top: 25%;
+  left: 55%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 280px;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--color-accent-secondary, #6366f1) 6%, transparent), transparent 70%);
+  animation: glow-pulse 5s ease-in-out infinite 1s;
 }
 
 /* Noise texture overlay for depth */

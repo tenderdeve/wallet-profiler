@@ -2,6 +2,7 @@ import SearchBar from '@/components/SearchBar';
 import FeaturedWallets from '@/components/FeaturedWallets';
 import LandingAbout from '@/components/LandingAbout';
 import HeroTitle from '@/components/HeroTitle';
+import FloatingWallets from '@/components/FloatingWallets';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
 export const metadata = {
@@ -13,7 +14,10 @@ export const metadata = {
 export default function HomePage() {
   return (
     <ErrorBoundary>
-      <main className="hero-glow noise-overlay flex min-h-[calc(100vh-57px)] flex-col items-center justify-center gap-10 px-4 py-16 sm:px-8">
+      <main className="hero-glow noise-overlay relative flex min-h-[calc(100vh-57px)] flex-col items-center justify-center gap-10 px-4 py-16 sm:px-8">
+        {/* Floating wallet avatars — blurred, sharpen on hover, link to profiles */}
+        <FloatingWallets />
+
         {/* Hero */}
         <div className="relative z-10 flex flex-col items-center gap-4 text-center">
           <div className="animate-fade-in-up">
