@@ -12,28 +12,32 @@ export const metadata = {
 
 export default function HomePage() {
   return (
-    // FIX 5 — Wraps all content so Alchemy-related render failures show a safe
-    // fallback instead of a blank/crashed page.
     <ErrorBoundary>
-      <main className="flex min-h-[calc(100vh-57px)] flex-col items-center justify-center gap-10 px-4 py-16 sm:px-8">
+      <main className="hero-glow noise-overlay flex min-h-[calc(100vh-57px)] flex-col items-center justify-center gap-10 px-4 py-16 sm:px-8">
         {/* Hero */}
-        <div className="flex flex-col items-center gap-4 text-center">
-          <HeroTitle />
-          <p className="whitespace-nowrap text-base text-gray-400">
+        <div className="relative z-10 flex flex-col items-center gap-4 text-center">
+          <div className="animate-fade-in-up">
+            <HeroTitle />
+          </div>
+          <p className="animate-fade-in-up delay-2 whitespace-nowrap text-base text-gray-400">
             Real-time wallet insights across balances, NFTs, and transaction history.
           </p>
         </div>
 
-        {/* Search bar — Client Component (needs router + localStorage) */}
-        <SearchBar />
+        {/* Search bar */}
+        <div className="animate-fade-in-up delay-3 relative z-10 w-full">
+          <SearchBar />
+        </div>
 
-        {/* Featured wallets — Server Component (static navigation cards) */}
-        <FeaturedWallets />
+        {/* Featured wallets */}
+        <div className="animate-fade-in-up delay-4 relative z-10">
+          <FeaturedWallets />
+        </div>
 
         {/* Learn More anchor */}
         <a
           href="#about"
-          className="mt-2 flex flex-col items-center gap-1 text-sm text-gray-500 hover:text-gray-300 transition-colors"
+          className="animate-fade-in delay-5 relative z-10 mt-2 flex flex-col items-center gap-1 text-sm text-gray-500 hover:text-gray-300 transition-colors"
         >
           Learn More
           <svg

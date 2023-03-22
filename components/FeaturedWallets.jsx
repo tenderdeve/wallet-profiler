@@ -18,7 +18,7 @@ export default function FeaturedWallets() {
           <Link
             key={wallet.address}
             href={`/profile/${wallet.address}`}
-            className="group flex items-center gap-3 rounded-xl border border-gray-800 bg-gray-900 px-4 py-3 hover:border-blue-500 hover:bg-gray-800 transition-colors"
+            className="card-hover gradient-border group flex items-center gap-3 rounded-xl border border-gray-800 bg-gray-900 px-4 py-3 shadow-lg shadow-black/5 hover:border-blue-500 hover:bg-gray-800 transition-colors"
           >
             <Image
               src={`${AVATAR_BASE_URL}/${wallet.address}.svg`}

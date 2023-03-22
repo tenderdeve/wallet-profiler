@@ -158,7 +158,7 @@ export default function SearchBar() {
           <button
             onClick={() => handleSearch(input)}
             disabled={isResolving || !input.trim()}
-            className="px-6 py-4 bg-blue-600 text-white font-semibold text-sm hover:bg-blue-500 active:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="glow-accent px-6 py-4 bg-blue-600 text-white font-semibold text-sm hover:bg-blue-500 active:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             aria-label="Search wallet"
           >
             {isResolving ? (
