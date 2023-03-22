@@ -1,9 +1,9 @@
 // Server-side proxy — keeps ALCHEMY_API_KEY out of the client bundle.
-// Client hooks call this route; this route calls the wallet and NFT services.
 import { isAddress } from 'ethers';
 import { getEthBalance, getTransactionCount, lookupEnsName } from '@/lib/services/wallet';
 import { getFirstTransferTimestamp } from '@/lib/services/transfers';
 import { getNftCount } from '@/lib/services/nft';
+import { checkRateLimit } from '@/lib/rateLimit';
 
 /**
  * GET /api/wallet?address=0x...
@@ -14,6 +14,9 @@ import { getNftCount } from '@/lib/services/nft';
  * Each field independently returns null on failure; the client renders '--' for null values.
  */
 export async function GET(request) {
+  const { allowed } = checkRateLimit(request);
+  if (!allowed) return Response.json({ error: 'Rate limit exceeded' }, { status: 429 });
+
   const { searchParams } = new URL(request.url);
   const address = searchParams.get('address');
 

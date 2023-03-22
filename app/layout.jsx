@@ -5,6 +5,9 @@ import Footer from '@/components/Footer';
 export const metadata = {
   title: 'Wallet Profiler',
   description: 'On-chain activity feed and analytics for any Ethereum wallet',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({ children }) {

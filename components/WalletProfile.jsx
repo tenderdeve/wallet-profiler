@@ -127,6 +127,7 @@ function CopyButton({ address }) {
  * @param {{ address: string }} props
  */
 export default function WalletProfile({ address }) {
+  const [avatarError, setAvatarError] = useState(false);
   const { profile, badge, loading, error } = useWalletProfile(address);
 
   if (loading) return <WalletProfileSkeleton />;
@@ -154,8 +155,8 @@ export default function WalletProfile({ address }) {
     <Card>
       {/* Avatar + identity + actions */}
       <div className="flex flex-wrap items-start gap-4">
-        {/* FIX 1 — avatar rendered only when URL is valid; initials placeholder shown otherwise */}
-        {avatarUrl ? (
+        {/* Avatar — validated URL with React-state fallback on load failure */}
+        {avatarUrl && !avatarError ? (
           <Image
             src={avatarUrl}
             alt={`Avatar for ${displayName}`}
@@ -164,10 +165,9 @@ export default function WalletProfile({ address }) {
             className="rounded-full"
             unoptimized
             referrerPolicy="no-referrer"
-            onError={(e) => { e.target.style.display = 'none'; }}
+            onError={() => setAvatarError(true)}
           />
         ) : (
-          // FIX 1 — initials fallback when address fails validation or avatar URL cannot be constructed
           <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gray-700 font-mono text-sm font-semibold text-gray-300">
             {address.slice(0, 2)}
           </div>

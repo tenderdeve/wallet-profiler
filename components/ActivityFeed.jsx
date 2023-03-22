@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { useActivityFeed } from '@/hooks/useActivityFeed';
 import { SkeletonFeedItem } from '@/components/ui/Skeleton';
 import Card from '@/components/ui/Card';
@@ -194,7 +194,7 @@ function TxIcon({ type, colorClass }) {
 
 // ─── Single feed item ─────────────────────────────────────────────────────────
 
-function FeedItem({ tx, address }) {
+const FeedItem = memo(function FeedItem({ tx, address }) {
   const { label, iconType, iconColorClass, valueDisplay } = getTxMeta(
     tx,
     address
@@ -249,7 +249,7 @@ function FeedItem({ tx, address }) {
       )}
     </div>
   );
-}
+});
 
 // ─── Main component ───────────────────────────────────────────────────────────
 

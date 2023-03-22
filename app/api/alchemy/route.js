@@ -1,5 +1,6 @@
 // Server-side API route — Alchemy SDK runs here so ALCHEMY_API_KEY never reaches the browser.
 import { resolveEnsName } from '@/lib/services/wallet';
+import { checkRateLimit } from '@/lib/rateLimit';
 
 /**
  * GET /api/alchemy?name=vitalik.eth
@@ -8,6 +9,9 @@ import { resolveEnsName } from '@/lib/services/wallet';
  * Returns { address: string | null } on success.
  */
 export async function GET(request) {
+  const { allowed } = checkRateLimit(request);
+  if (!allowed) return Response.json({ error: 'Rate limit exceeded' }, { status: 429 });
+
   const { searchParams } = new URL(request.url);
   const name = searchParams.get('name');
 

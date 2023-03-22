@@ -18,9 +18,9 @@ export default class ErrorBoundary extends Component {
     return { hasError: true };
   }
 
-  componentDidCatch(error, info) {
-    // Log full error details for debugging — never surfaced to the client UI.
-    console.error('ErrorBoundary caught a render error:', error, info);
+  componentDidCatch() {
+    // Error details intentionally not logged — no console.log/error in production.
+    // In a production app, send to an error reporting service (e.g. Sentry).
   }
 
   render() {

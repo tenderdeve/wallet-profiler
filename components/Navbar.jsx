@@ -154,29 +154,20 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 border-b border-gray-800 bg-gray-950/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
-            <svg
-              className="h-4 w-4 text-white"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2.5}
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4" />
-            </svg>
-          </div>
+          <svg className="h-8 w-8 shrink-0" viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="32" cy="32" r="30" fill="#0966C0" />
+            <text x="32" y="44" textAnchor="middle" fontFamily="Inter, Arial, sans-serif" fontWeight="700" fontSize="36" fill="#ffffff">W</text>
+          </svg>
           <span className="text-sm font-bold text-gray-100 tracking-tight">
             Wallet Profiler
           </span>
         </Link>
 
         {/* Desktop: search + connect */}
-        <div className="hidden items-center gap-3 md:flex md:flex-1 md:max-w-md md:mx-8">
+        <div className="hidden items-center gap-3 md:flex md:flex-1 md:max-w-lg md:mx-8">
           {!isHome && <NavSearch />}
         </div>
 

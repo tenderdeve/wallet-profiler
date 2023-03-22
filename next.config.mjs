@@ -1,3 +1,5 @@
+const isDev = process.env.NODE_ENV === 'development';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -38,18 +40,36 @@ const nextConfig = {
             value: 'camera=(), microphone=(), geolocation=()',
           },
           {
-            // CSP: restrict resource origins to known safe sources.
-            // 'unsafe-eval' and 'unsafe-inline' are required by Next.js dev mode and Tailwind.
-            // connect-src covers Alchemy endpoints called server-side via /api routes.
+            // CSP: env-specific — dev mode needs unsafe-eval/inline for HMR; prod locks down.
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-              "style-src 'self' 'unsafe-inline'",
+              isDev
+                ? "script-src 'self' 'unsafe-eval' 'unsafe-inline'"
+                : "script-src 'self'",
+              isDev
+                ? "style-src 'self' 'unsafe-inline'"
+                : "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https://effigy.im",
               "connect-src 'self' https://*.alchemyapi.io https://*.g.alchemy.com",
             ].join('; '),
           },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin',
+          },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'same-origin',
+          },
+        ],
+      },
+      {
+        // CORS — restrict API routes to same-origin only
+        source: '/api/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: 'same-origin' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET, OPTIONS' },
         ],
       },
     ];

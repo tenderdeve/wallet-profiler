@@ -8,24 +8,15 @@ import { ETHERSCAN_BASE_URL } from '@/lib/constants';
 export default function Footer() {
   return (
     <footer className="border-t border-gray-800 bg-gray-900">
-      <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
           {/* Brand */}
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600">
-                <svg
-                  className="h-3.5 w-3.5 text-white"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
-                  aria-hidden="true"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4" />
-                </svg>
-              </div>
+              <svg className="h-7 w-7 shrink-0" viewBox="0 0 64 64" aria-hidden="true">
+                <circle cx="32" cy="32" r="30" fill="#0966C0" />
+                <text x="32" y="44" textAnchor="middle" fontFamily="Inter, Arial, sans-serif" fontWeight="700" fontSize="36" fill="#ffffff">W</text>
+              </svg>
               <span className="text-sm font-bold text-gray-100">Wallet Profiler</span>
             </div>
             <p className="text-xs leading-relaxed text-gray-500">

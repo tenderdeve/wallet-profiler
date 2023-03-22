@@ -101,8 +101,25 @@ export function useWallet() {
         });
         setWrongNetwork(false);
       } catch (switchErr) {
-        if (switchErr.code !== 4902) {
-          // 4902 = chain not added; other errors mean user rejected or wallet issue
+        if (switchErr.code === 4902) {
+          // Chain not in wallet — add Sepolia
+          try {
+            await window.ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [{
+                chainId: SEPOLIA_CHAIN_ID,
+                chainName: 'Sepolia Testnet',
+                nativeCurrency: { name: 'SepoliaETH', symbol: 'ETH', decimals: 18 },
+                rpcUrls: ['https://rpc.sepolia.org'],
+                blockExplorerUrls: ['https://sepolia.etherscan.io'],
+              }],
+            });
+            setWrongNetwork(false);
+          } catch {
+            setError('Could not add Sepolia network.');
+            return null;
+          }
+        } else {
           setError('Please switch to Sepolia testnet.');
           return null;
         }

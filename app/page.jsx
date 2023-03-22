@@ -1,6 +1,7 @@
 import SearchBar from '@/components/SearchBar';
 import FeaturedWallets from '@/components/FeaturedWallets';
 import LandingAbout from '@/components/LandingAbout';
+import HeroTitle from '@/components/HeroTitle';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
 export const metadata = {
@@ -16,16 +17,10 @@ export default function HomePage() {
     <ErrorBoundary>
       <main className="flex min-h-[calc(100vh-57px)] flex-col items-center justify-center gap-10 px-4 py-16 sm:px-8">
         {/* Hero */}
-        <div className="flex flex-col items-center gap-3 text-center">
-          <div className="flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-xs font-medium text-blue-400">
-            Sepolia Testnet
-          </div>
-          <h1 className="text-4xl font-bold tracking-tight text-gray-100 sm:text-5xl">
-            Wallet Profiler
-          </h1>
-          <p className="max-w-md text-base text-gray-400">
-            Search any Ethereum address to explore its on-chain activity,
-            token balances, NFTs, and analytics.
+        <div className="flex flex-col items-center gap-4 text-center">
+          <HeroTitle />
+          <p className="whitespace-nowrap text-base text-gray-400">
+            Real-time wallet insights across balances, NFTs, and transaction history.
           </p>
         </div>
 
