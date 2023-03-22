@@ -19,7 +19,7 @@ export default function ProfilePage({ params }) {
 
   if (!isAddress(address)) {
     return (
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         <Link
           href="/"
           className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-100 transition-colors"
@@ -37,7 +37,7 @@ export default function ProfilePage({ params }) {
 
   return (
     <ErrorBoundary>
-    <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       {/* Back link */}
       <Link
         href="/"

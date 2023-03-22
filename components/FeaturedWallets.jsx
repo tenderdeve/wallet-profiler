@@ -9,7 +9,7 @@ import { truncateAddress } from '@/lib/utils';
  */
 export default function FeaturedWallets() {
   return (
-    <div className="flex w-full max-w-2xl flex-col gap-3">
+    <div className="flex w-full max-w-3xl flex-col gap-3">
       <span className="text-xs font-medium uppercase tracking-widest text-gray-500">
         Featured wallets
       </span>

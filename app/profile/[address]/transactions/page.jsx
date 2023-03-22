@@ -14,7 +14,7 @@ export default function TransactionsPage({ params }) {
 
   if (!isAddress(address)) {
     return (
-      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-100 transition-colors">
           ← Back to search
         </Link>
@@ -28,7 +28,7 @@ export default function TransactionsPage({ params }) {
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       {/* Back to profile */}
       <Link
         href={`/profile/${address}`}

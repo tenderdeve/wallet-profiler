@@ -59,7 +59,7 @@ const STEPS = [
 export default function LandingAbout() {
   return (
     <section id="about" className="w-full bg-gray-900/50 py-20">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {/* Section heading */}
         <div className="text-center">
           <h2 className="text-2xl font-bold tracking-tight text-gray-100 sm:text-3xl">
