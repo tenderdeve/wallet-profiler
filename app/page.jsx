@@ -3,6 +3,7 @@ import FeaturedWallets from '@/components/FeaturedWallets';
 import LandingAbout from '@/components/LandingAbout';
 import HeroTitle from '@/components/HeroTitle';
 import FloatingWallets from '@/components/FloatingWallets';
+import ConnectWallet from '@/components/ConnectWallet';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
 export const metadata = {
@@ -29,9 +30,14 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* Search bar */}
-        <div className="animate-fade-in-up delay-3 relative z-10 w-full">
-          <SearchBar />
+        {/* Search bar + Connect Wallet */}
+        <div className="animate-fade-in-up delay-3 relative z-10 flex w-full max-w-3xl items-stretch gap-3">
+          <div className="flex-1">
+            <SearchBar />
+          </div>
+          <div className="hidden shrink-0 sm:flex sm:items-start">
+            <ConnectWallet heroHeight />
+          </div>
         </div>
 
         {/* Featured wallets + preview — bottom of hero, intentionally overflows the fold */}

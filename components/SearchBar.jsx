@@ -138,7 +138,7 @@ export default function SearchBar() {
   return (
     <div className="flex w-full flex-col items-center gap-6">
       {/* Search input */}
-      <div className="flex w-full max-w-3xl flex-col gap-2">
+      <div className="flex w-full flex-col gap-2">
         <div className="flex w-full overflow-hidden rounded-xl border border-gray-700 bg-gray-900 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-colors">
           <input
             type="text"
@@ -201,7 +201,7 @@ export default function SearchBar() {
 
       {/* Recent searches */}
       {recentSearches.length > 0 && (
-        <div className="flex w-full max-w-3xl flex-col gap-2">
+        <div className="flex w-full flex-col gap-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium uppercase tracking-widest text-gray-500">
               Recent searches

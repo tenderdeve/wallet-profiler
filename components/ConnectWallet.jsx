@@ -181,7 +181,7 @@ function ConnectModal({ onClose, onConnect, isConnecting, error, hasProvider }) 
  *
  * @param {{ compact?: boolean }} props — compact mode for mobile
  */
-export default function ConnectWallet({ compact = false }) {
+export default function ConnectWallet({ compact = false, heroHeight = false }) {
   const router = useRouter();
   const { address, connect, disconnect, isConnecting, error, hasProvider, wrongNetwork } = useWallet();
   const [modalOpen, setModalOpen] = useState(false);
@@ -236,7 +236,7 @@ export default function ConnectWallet({ compact = false }) {
     <>
       <button
         onClick={() => setModalOpen(true)}
-        className={`rounded-lg bg-blue-600 text-sm font-semibold text-white hover:bg-blue-500 active:bg-blue-700 transition-colors ${compact ? 'w-full px-4 py-2.5' : 'px-4 py-2'}`}
+        className={`glow-accent rounded-xl bg-blue-600 text-sm font-semibold text-white hover:bg-blue-500 active:bg-blue-700 transition-all ${compact ? 'w-full px-4 py-2.5' : heroHeight ? 'px-6 py-4 whitespace-nowrap' : 'px-4 py-2'}`}
         aria-label="Connect wallet"
       >
         Connect Wallet
