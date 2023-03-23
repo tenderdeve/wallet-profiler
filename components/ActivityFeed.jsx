@@ -7,9 +7,9 @@ import Card from '@/components/ui/Card';
 import { TX_CATEGORIES, ETHERSCAN_BASE_URL } from '@/lib/constants';
 import { truncateHash, timeAgo } from '@/lib/utils';
 
-const SKELETON_COUNT = 8;
-const INITIAL_DISPLAY_COUNT = 20;
-const LOAD_MORE_INCREMENT = 15;
+const SKELETON_COUNT = 6;
+const INITIAL_DISPLAY_COUNT = 8;
+const LOAD_MORE_INCREMENT = 8;
 
 // ─── Security helpers ─────────────────────────────────────────────────────────
 

@@ -124,7 +124,17 @@ function TypePieChart({ data, colors }) {
           outerRadius={72}
           innerRadius={36}
           paddingAngle={2}
-          label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
+          label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+            const RADIAN = Math.PI / 180;
+            const radius = outerRadius + 20;
+            const x = cx + radius * Math.cos(-midAngle * RADIAN);
+            const y = cy + radius * Math.sin(-midAngle * RADIAN);
+            return (
+              <text x={x} y={y} fill={colors.textPrimary} textAnchor="middle" dominantBaseline="central" fontSize={13} fontWeight={600}>
+                {`${(percent * 100).toFixed(0)}%`}
+              </text>
+            );
+          }}
           labelLine={false}
         >
           {data.map((_, i) => (
@@ -200,21 +210,25 @@ export default function StatsDashboard({ address }) {
   if (!chartData) return null;
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <div className="flex flex-col gap-4">
+      {/* Full-width monthly chart */}
       <Card>
-        <h3 className="mb-3 text-sm font-medium text-gray-400">Monthly Activity</h3>
+        <h3 className="mb-3 text-sm font-medium text-gray-400">Monthly Transaction Volume</h3>
         <MonthlyChart data={chartData.monthly} colors={colors} />
       </Card>
 
-      <Card>
-        <h3 className="mb-3 text-sm font-medium text-gray-400">TX Type Breakdown</h3>
-        <TypePieChart data={chartData.typeBreakdown} colors={colors} />
-      </Card>
+      {/* Two smaller charts side-by-side */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <Card>
+          <h3 className="mb-3 text-sm font-medium text-gray-400">TX Type Breakdown</h3>
+          <TypePieChart data={chartData.typeBreakdown} colors={colors} />
+        </Card>
 
-      <Card>
-        <h3 className="mb-3 text-sm font-medium text-gray-400">Top Tokens Sent</h3>
-        <TopTokensChart data={chartData.topTokens} colors={colors} />
-      </Card>
+        <Card>
+          <h3 className="mb-3 text-sm font-medium text-gray-400">Top Tokens Sent</h3>
+          <TopTokensChart data={chartData.topTokens} colors={colors} />
+        </Card>
+      </div>
     </div>
   );
 }

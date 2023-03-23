@@ -152,78 +152,80 @@ export default function WalletProfile({ address }) {
   const displayName = sanitizedEns ?? truncateAddress(address);
 
   return (
-    <Card>
-      {/* Avatar + identity + actions */}
-      <div className="flex flex-wrap items-start gap-4">
-        {/* Avatar — validated URL with React-state fallback on load failure */}
-        {avatarUrl && !avatarError ? (
-          <Image
-            src={avatarUrl}
-            alt={`Avatar for ${displayName}`}
-            width={64}
-            height={64}
-            className="rounded-full"
-            unoptimized
-            referrerPolicy="no-referrer"
-            onError={() => setAvatarError(true)}
-          />
-        ) : (
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gray-700 font-mono text-sm font-semibold text-gray-300">
-            {address.slice(0, 2)}
+    <Card className="p-5 sm:p-6">
+      {/* Profile header — identity left, stats right */}
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        {/* Left: Avatar + name + badge + actions */}
+        <div className="flex items-start gap-4">
+          {/* Avatar */}
+          <div className="shrink-0 overflow-hidden rounded-xl border border-gray-700/50 bg-gray-800 shadow-lg shadow-black/10">
+            {avatarUrl && !avatarError ? (
+              <Image
+                src={avatarUrl}
+                alt={`Avatar for ${displayName}`}
+                width={80}
+                height={80}
+                className="rounded-xl"
+                unoptimized
+                referrerPolicy="no-referrer"
+                onError={() => setAvatarError(true)}
+              />
+            ) : (
+              <div className="flex h-20 w-20 items-center justify-center font-mono text-lg font-semibold text-gray-300">
+                {address.slice(0, 2)}
+              </div>
+            )}
           </div>
-        )}
 
-        <div className="flex min-w-0 flex-1 flex-col gap-2">
-          {/* Name row */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="break-all font-mono text-sm font-semibold text-gray-100 sm:text-base">
-              {displayName}
-            </span>
-            {/* FIX 3 — secondary address shown only when a sanitized ENS name is present */}
+          <div className="flex min-w-0 flex-col gap-1.5">
+            {/* Name + badge */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-lg font-bold text-gray-100 sm:text-xl">
+                {displayName}
+              </span>
+              {badge && <Badge label={badge.label} variant={badge.variant} />}
+            </div>
+
+            {/* Secondary address when ENS is shown */}
             {sanitizedEns && (
               <span className="font-mono text-xs text-gray-500">
                 {truncateAddress(address)}
               </span>
             )}
-          </div>
 
-          {/* Badge */}
-          {badge && <Badge label={badge.label} variant={badge.variant} />}
-
-          {/* Action buttons */}
-          <div className="mt-1 flex flex-wrap items-center gap-2">
-            <CopyButton address={address} />
-            {/* FIX 4 — Etherscan link only rendered when address is valid; prevents malformed href from crafted param */}
-            {validAddress && (
-              <a
-                href={`${ETHERSCAN_BASE_URL}/address/${address}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-gray-700 px-3 py-1.5 text-xs font-medium text-gray-400 transition-colors hover:border-gray-500 hover:text-gray-200"
-              >
-                <svg
-                  className="h-3.5 w-3.5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  aria-hidden="true"
+            {/* Action buttons */}
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <CopyButton address={address} />
+              {validAddress && (
+                <a
+                  href={`${ETHERSCAN_BASE_URL}/address/${address}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-gray-700 px-3 py-1.5 text-xs font-medium text-gray-400 transition-colors hover:border-gray-500 hover:text-gray-200"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-                  />
-                </svg>
-                Etherscan
-              </a>
-            )}
+                  <svg
+                    className="h-3.5 w-3.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                    />
+                  </svg>
+                  View on Etherscan
+                </a>
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Stat tiles */}
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {/* Right: Stat tiles — horizontal row on desktop */}
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:flex lg:gap-3">
         {/* FIX 2 — balance null when getEthBalance failed; suffix omitted alongside '--' */}
         <StatTile
           label="ETH Balance"
@@ -258,6 +260,7 @@ export default function WalletProfile({ address }) {
           }
           suffix={profile.walletAge != null && profile.walletAge > 0 ? 'days' : undefined}
         />
+        </div>
       </div>
     </Card>
   );

@@ -26,7 +26,7 @@ html {
     --color-border-subtle: #2e2e42;
     --color-text-primary: #eeeef4;  /* cool white */
     --color-text-secondary: #9898b0;
-    --color-text-muted: #6868808;
+    --color-text-muted: #686880;
     --color-text-inverted: #06060c;
     --gradient-start: #06060c;
     --gradient-mid: #0a0a18;        /* mid-stop for 3-point gradient */
@@ -47,7 +47,7 @@ html {
     --color-border-subtle: #343448;
     --color-text-primary: #e4e4ee;
     --color-text-secondary: #9292a8;
-    --color-text-muted: #6868808;
+    --color-text-muted: #686880;
     --color-text-inverted: #0e0e16;
     --gradient-start: #0e0e16;
     --gradient-mid: #121220;
@@ -157,15 +157,23 @@ html {
 }
 
 /* ─── Recharts theme ───────────────────────────────────────────────────────── */
-/* Recharts renders SVG <text> with fill — CSS vars don't resolve inside SVG.
-   Setting color on the container lets fill:currentColor inherit the theme. */
+/* Force all Recharts SVG text to use theme colors — prevents black text on dark bg */
 .recharts-wrapper,
 .recharts-surface {
   color: var(--color-text-muted);
 }
+.recharts-text,
 .recharts-cartesian-axis-tick-value,
-.recharts-label {
+.recharts-label,
+.recharts-pie-label-text {
   fill: var(--color-text-muted) !important;
+}
+.recharts-legend-item-text {
+  color: var(--color-text-secondary) !important;
+}
+/* Catch any remaining SVG text inside Recharts containers */
+.recharts-wrapper text {
+  fill: var(--color-text-muted);
 }
 .recharts-legend-item-text {
   color: var(--color-text-secondary) !important;
