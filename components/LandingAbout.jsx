@@ -1,8 +1,9 @@
 /**
  * Landing page sections — Tools for the Chain, Operational Workflow, Tech Stack, FAQs.
  * Design direction: glass-border cards, gradient fills, bento grid, sticky FAQ.
- * Server Component — purely presentational.
  */
+
+import FaqAccordion from '@/components/FaqAccordion';
 
 const FEATURES = [
   {
@@ -143,7 +144,7 @@ export default function LandingAbout() {
   return (
     <>
       {/* ─── Tools for the Chain ─── bg matches footer (bg-gray-900) */}
-      <section id="about" className="w-full bg-gray-900 py-24">
+      <section id="about" className="w-full bg-gray-900 py-12 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-4">
             <span className="text-[11px] font-medium uppercase tracking-widest text-gray-700">
@@ -190,7 +191,7 @@ export default function LandingAbout() {
       </section>
 
       {/* ─── Operational Workflow ─── same header layout as Tools */}
-      <section className="w-full border-t border-gray-800/50 py-24">
+      <section className="w-full border-t border-gray-800/50 py-12 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-4">
             <span className="text-[11px] font-medium uppercase tracking-widest text-gray-700">
@@ -206,7 +207,7 @@ export default function LandingAbout() {
             </p>
           </div>
 
-          <div className="relative mt-16 grid grid-cols-1 gap-8 sm:grid-cols-3">
+          <div className="relative mt-10 grid grid-cols-1 gap-8 sm:mt-16 sm:grid-cols-3">
             {/* Connecting line — desktop only */}
             <div className="pointer-events-none absolute top-8 left-[16.66%] right-[16.66%] hidden h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent sm:block" />
 
@@ -227,7 +228,7 @@ export default function LandingAbout() {
       </section>
 
       {/* ─── Tech Stack ─── bg matches footer */}
-      <section className="w-full bg-gray-900 py-16">
+      <section className="w-full bg-gray-900 py-10 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="gradient-border rounded-2xl border border-gray-800 bg-gray-900/80 p-10 text-center shadow-md shadow-black/5 backdrop-blur-sm">
             <h3 className="text-lg font-semibold text-gray-100">Built with</h3>
@@ -249,7 +250,7 @@ export default function LandingAbout() {
       </section>
 
       {/* ─── FAQ ─── heading sticky-left, cards scroll-right */}
-      <section className="w-full border-t border-gray-800/50 py-24">
+      <section className="w-full border-t border-gray-800/50 py-12 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="flex flex-col gap-12 sm:flex-row sm:gap-16">
             {/* Left — sticky heading */}
@@ -265,33 +266,8 @@ export default function LandingAbout() {
               </p>
             </div>
 
-            {/* Right — FAQ cards */}
-            <div className="flex-1 space-y-3">
-              {FAQS.map((faq, i) => (
-                <details
-                  key={faq.q}
-                  open={i === 0}
-                  className="group rounded-xl border border-gray-800/80 bg-gray-900/40 backdrop-blur-sm transition-colors hover:border-gray-700/80"
-                >
-                  <summary className="flex cursor-pointer items-center justify-between px-6 py-5 text-sm font-medium text-gray-100 [&::-webkit-details-marker]:hidden">
-                    <span>{faq.q}</span>
-                    <svg
-                      className="ml-4 h-4 w-4 shrink-0 text-gray-500 transition-transform duration-300 group-open:rotate-180"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      aria-hidden="true"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                    </svg>
-                  </summary>
-                  <div className="border-t border-gray-800/50 px-6 py-4">
-                    <p className="text-sm leading-relaxed text-gray-400">{faq.a}</p>
-                  </div>
-                </details>
-              ))}
-            </div>
+            {/* Right — FAQ accordion (only one open at a time) */}
+            <FaqAccordion items={FAQS} />
           </div>
         </div>
       </section>

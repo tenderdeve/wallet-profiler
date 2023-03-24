@@ -63,7 +63,7 @@ export default function ThemeSwitcher() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 z-50 overflow-hidden rounded-lg border border-gray-700 bg-gray-900 shadow-xl">
+        <div className="absolute left-0 top-full mt-2 z-50 w-[calc(100vw-2rem)] overflow-hidden rounded-lg border border-gray-700 bg-gray-900 shadow-xl sm:left-auto sm:right-0 sm:w-auto">
           {THEMES.map((t) => (
             <button
               key={t.key}

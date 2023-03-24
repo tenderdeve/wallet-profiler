@@ -19,7 +19,7 @@ export default function ProfilePage({ params }) {
 
   if (!isAddress(address)) {
     return (
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-7xl px-4 py-5 sm:py-8 sm:px-6">
         <Link
           href="/"
           className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-100 transition-colors"
@@ -37,7 +37,7 @@ export default function ProfilePage({ params }) {
 
   return (
     <ErrorBoundary>
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-7xl px-4 py-5 sm:py-8 sm:px-6">
         {/* Back link */}
         <Link
           href="/"
@@ -61,12 +61,12 @@ export default function ProfilePage({ params }) {
         </Link>
 
         {/* Wallet Profile Header */}
-        <div className="mt-6 mb-8">
+        <div className="mt-4 mb-6 sm:mt-6 sm:mb-8">
           <WalletProfile address={address} />
         </div>
 
         {/* Dashboard + Activity — 2-column on desktop */}
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-5">
           {/* Left: Charts (wider) */}
           <div className="lg:col-span-3">
             <div className="mb-4">
@@ -80,8 +80,8 @@ export default function ProfilePage({ params }) {
             <StatsDashboard address={address} />
           </div>
 
-          {/* Right: Activity Feed */}
-          <div className="lg:col-span-2">
+          {/* Right: Activity Feed — sticky scroll alongside charts */}
+          <div className="lg:col-span-2 lg:self-start lg:sticky lg:top-[73px]">
             <div className="mb-4 flex items-end justify-between">
               <div>
                 <span className="text-[11px] font-medium uppercase tracking-widest text-gray-700">

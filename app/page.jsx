@@ -16,7 +16,7 @@ export default function HomePage() {
   return (
     <ErrorBoundary>
       {/* Hero — featured wallets + preview sit at the bottom, preview cuts off at the fold */}
-      <main className="hero-glow noise-overlay relative flex min-h-[calc(100vh-57px)] flex-col items-center gap-10 px-4 pt-[16vh] pb-16 sm:px-8">
+      <main className="hero-glow noise-overlay relative flex min-h-[calc(100vh-57px)] flex-col items-center gap-6 px-4 pt-[10vh] pb-10 sm:gap-8 sm:pt-[14vh] sm:pb-12 sm:px-8 lg:gap-10 lg:pt-[16vh] lg:pb-16">
         {/* Floating wallet avatars */}
         <FloatingWallets />
 
@@ -25,7 +25,7 @@ export default function HomePage() {
           <div className="animate-fade-in-up">
             <HeroTitle />
           </div>
-          <p className="animate-fade-in-up delay-2 whitespace-nowrap text-base text-gray-400">
+          <p className="animate-fade-in-up delay-2 text-sm text-gray-400 sm:whitespace-nowrap sm:text-base">
             Real-time wallet insights across balances, NFTs, and transaction history.
           </p>
         </div>
@@ -47,7 +47,7 @@ export default function HomePage() {
       </main>
 
       {/* Spacer between hero and about */}
-      <div className="h-16" />
+      <div className="h-8 sm:h-16" />
 
       {/* About section */}
       <LandingAbout />

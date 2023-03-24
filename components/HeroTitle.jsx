@@ -65,8 +65,8 @@ export default function HeroTitle() {
 
   return (
     <h1
-      className="font-bold text-gray-100"
-      style={{ fontSize: 'clamp(2.25rem, 5vw, 3.75rem)', letterSpacing: '-0.02em', lineHeight: 1.3, paddingLeft: '1.5em' }}
+      className="whitespace-nowrap font-bold text-gray-100 sm:whitespace-normal"
+      style={{ fontSize: 'clamp(1.6rem, 5vw, 3.75rem)', letterSpacing: '-0.02em', lineHeight: 1.3, paddingLeft: '1.5em' }}
     >
       <span>On-Chain</span>
       <span
