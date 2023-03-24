@@ -7,19 +7,19 @@ import Image from 'next/image';
 import { FEATURED_WALLETS, AVATAR_BASE_URL, ETHERSCAN_BASE_URL } from '@/lib/constants';
 import { truncateAddress } from '@/lib/utils';
 
-// Dummy preview data — no API calls on the home page, actual data loads on profile
+// Dummy preview data — testnet-realistic values, actual data loads on profile page
 const PREVIEW_DATA = {
   [FEATURED_WALLETS[0].address]: {
-    balance: '51.1027', txCount: '2,847', nftCount: '1,184', firstTx: 'Jan 2018',
+    balance: '3.4521', txCount: '847', nftCount: '24', firstTx: 'Sep 2022',
     badge: 'NFT Collector', badgeColor: 'text-blue-400 bg-blue-500/10',
   },
   [FEATURED_WALLETS[1].address]: {
-    balance: '1,247,893.42', txCount: '18.2M', nftCount: '42', firstTx: 'Aug 2017',
+    balance: '12.8903', txCount: '1,203', nftCount: '3', firstTx: 'Jul 2022',
     badge: 'Whale', badgeColor: 'text-amber-400 bg-amber-500/10',
   },
   [FEATURED_WALLETS[2].address]: {
-    balance: '89,241.08', txCount: '5.1M', nftCount: '0', firstTx: 'Mar 2019',
-    badge: 'Exchange', badgeColor: 'text-green-400 bg-green-500/10',
+    balance: '0.9241', txCount: '456', nftCount: '0', firstTx: 'Nov 2022',
+    badge: 'Regular User', badgeColor: 'text-green-400 bg-green-500/10',
   },
 };
 

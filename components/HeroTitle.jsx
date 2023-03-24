@@ -87,8 +87,8 @@ export default function HeroTitle() {
               style={{ transform: y, opacity: isActive ? 1 : 0 }}
               aria-hidden={!isActive}
             >
-              <span style={{ color: '#0966C0' }}>{word.text}</span>
-              <span style={{ color: '#0966C0' }}>{word.icon}</span>
+              <span style={{ color: 'var(--color-accent-active, #0966C0)' }}>{word.text}</span>
+              <span style={{ color: 'var(--color-accent-active, #0966C0)' }}>{word.icon}</span>
             </span>
           );
         })}

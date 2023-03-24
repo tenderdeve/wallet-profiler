@@ -165,7 +165,7 @@ export default function LandingAbout() {
             {FEATURES.map((f) => (
               <div
                 key={f.title}
-                className={`card-hover group relative overflow-hidden rounded-2xl border border-gray-700/50 ${f.gradient} p-6 shadow-md ${f.glow} transition-all hover:border-gray-600/60 ${f.span}`}
+                className={`card-hover group relative overflow-hidden rounded-2xl border border-gray-800 ${f.gradient} p-6 shadow-md ${f.glow} transition-all hover:border-gray-700 ${f.span}`}
               >
                 {/* Large decorative icon — highlighted, bottom-right */}
                 <div className={`pointer-events-none absolute -bottom-4 -right-4 transition-all duration-500 ${f.iconAccent}`}>
@@ -173,7 +173,7 @@ export default function LandingAbout() {
                 </div>
 
                 {/* Icon pill */}
-                <div className="mb-4 inline-flex items-center justify-center rounded-lg border border-gray-700/50 bg-gray-800/60 p-2.5 text-blue-400 backdrop-blur-sm">
+                <div className="mb-4 inline-flex items-center justify-center rounded-lg border border-gray-800 bg-gray-800 p-2.5 text-blue-400">
                   {f.icon}
                 </div>
 
@@ -230,13 +230,13 @@ export default function LandingAbout() {
       {/* ─── Tech Stack ─── bg matches footer */}
       <section className="w-full bg-gray-900 py-10 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="gradient-border rounded-2xl border border-gray-800 bg-gray-900/80 p-10 text-center shadow-md shadow-black/5 backdrop-blur-sm">
+          <div className="gradient-border rounded-2xl border border-gray-800 bg-gray-900 p-10 text-center shadow-md shadow-black/5">
             <h3 className="text-lg font-semibold text-gray-100">Built with</h3>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               {['Next.js 14', 'Tailwind CSS', 'Alchemy SDK', 'Recharts', 'ethers.js'].map((tech) => (
                 <span
                   key={tech}
-                  className="rounded-full border border-gray-700/60 bg-gray-800/60 px-5 py-2 text-sm font-medium text-gray-300 backdrop-blur-sm"
+                  className="rounded-full border border-gray-700 bg-gray-800 px-5 py-2 text-sm font-medium text-gray-300"
                 >
                   {tech}
                 </span>

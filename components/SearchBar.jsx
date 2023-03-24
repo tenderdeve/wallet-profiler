@@ -102,7 +102,7 @@ export default function SearchBar() {
           const resolved = data.address;
           if (!resolved) {
             setError(
-              'ENS name could not be resolved. Note: ENS resolution has limited support on Sepolia testnet.'
+              'ENS name could not be resolved. Note: ENS has limited support on testnets.'
             );
             return;
           }

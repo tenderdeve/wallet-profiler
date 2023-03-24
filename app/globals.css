@@ -96,6 +96,7 @@ html {
   [data-theme] .bg-gray-900\/80 { background-color: color-mix(in srgb, var(--color-bg-surface) 80%, transparent); }
   [data-theme] .bg-gray-900\/50 { background-color: color-mix(in srgb, var(--color-bg-surface) 50%, transparent); }
   [data-theme] .bg-gray-800 { background-color: var(--color-bg-elevated); }
+  [data-theme] .bg-gray-800\/60 { background-color: color-mix(in srgb, var(--color-bg-elevated) 60%, transparent); }
   [data-theme] .bg-gray-800\/30 { background-color: color-mix(in srgb, var(--color-bg-elevated) 30%, transparent); }
   [data-theme] .bg-gray-700 { background-color: var(--color-bg-muted); }
   [data-theme] .bg-gray-950\/90 { background-color: color-mix(in srgb, var(--color-bg-base) 90%, transparent); }

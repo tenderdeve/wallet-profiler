@@ -38,15 +38,17 @@ function FloatingAvatar({ wallet }) {
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      title={`${wallet.label} — ${truncateAddress(wallet.address)}`}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
+      aria-label={`View ${wallet.label} profile — ${truncateAddress(wallet.address)}`}
     >
       {/* Glow ring behind avatar */}
       <div
         className="absolute inset-[-4px] rounded-full transition-all duration-500"
         style={{
           background: hovered
-            ? 'radial-gradient(circle, rgba(22,130,222,0.4), transparent 70%)'
-            : 'radial-gradient(circle, rgba(22,130,222,0.15), transparent 70%)',
+            ? 'radial-gradient(circle, color-mix(in srgb, var(--color-accent) 40%, transparent), transparent 70%)'
+            : 'radial-gradient(circle, color-mix(in srgb, var(--color-accent) 15%, transparent), transparent 70%)',
           transform: hovered ? 'scale(1.6)' : 'scale(1.2)',
         }}
       />
@@ -58,10 +60,10 @@ function FloatingAvatar({ wallet }) {
           width: wallet.size,
           height: wallet.size,
           filter: hovered ? 'blur(0px) brightness(1.1)' : 'blur(2px) brightness(0.7)',
-          borderColor: hovered ? 'rgba(22,130,222,0.6)' : 'rgba(255,255,255,0.08)',
+          borderColor: hovered ? 'color-mix(in srgb, var(--color-accent) 60%, transparent)' : 'rgba(255,255,255,0.08)',
           transform: hovered ? 'scale(1.15)' : 'scale(1)',
           boxShadow: hovered
-            ? '0 0 20px rgba(22,130,222,0.3), 0 0 40px rgba(99,102,241,0.15)'
+            ? '0 0 20px color-mix(in srgb, var(--color-accent) 30%, transparent), 0 0 40px color-mix(in srgb, var(--color-accent-secondary, #6366f1) 15%, transparent)'
             : '0 4px 12px rgba(0,0,0,0.3)',
         }}
       >
