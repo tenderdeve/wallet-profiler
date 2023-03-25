@@ -44,9 +44,7 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              isDev
-                ? "script-src 'self' 'unsafe-eval' 'unsafe-inline'"
-                : "script-src 'self'",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
               isDev
                 ? "style-src 'self' 'unsafe-inline'"
                 : "style-src 'self' 'unsafe-inline'",
