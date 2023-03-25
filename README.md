@@ -4,6 +4,26 @@
 
 On-chain activity feed and analytics for any Ethereum wallet. Search any address to explore balances, transactions, NFTs, and personality badges — all powered by live Sepolia testnet data.
 
+## Screenshots
+
+### Home Page
+![Home Page](public/screenshots/home.png)
+
+### Wallet Profile
+![Wallet Profile](public/screenshots/profile.png)
+
+### Transactions Table
+![Transactions](public/screenshots/transactions.png)
+
+### Connect Wallet
+![Connect Wallet](public/screenshots/connect.png)
+
+### Light Theme — FAQ
+![FAQ Light Theme](public/screenshots/FAQ%20Light.png)
+
+### Mobile View
+![Mobile](public/screenshots/home-mobile.png)
+
 ## Features
 
 - **Wallet Profile** — Avatar, ENS name, ETH balance, NFT count, wallet age, and personality badge (Whale, NFT Collector, DeFi Degen, New User)
