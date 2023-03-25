@@ -40,16 +40,16 @@ const nextConfig = {
             value: 'camera=(), microphone=(), geolocation=()',
           },
           {
-            // CSP: env-specific — dev mode needs unsafe-eval/inline for HMR; prod locks down.
+            // CSP: permissive enough for Next.js hydration + Alchemy API calls.
+            // unsafe-eval/inline required by Next.js client runtime in production.
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
               "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-              isDev
-                ? "style-src 'self' 'unsafe-inline'"
-                : "style-src 'self' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https://effigy.im",
-              "connect-src 'self' https://*.alchemyapi.io https://*.g.alchemy.com",
+              "font-src 'self'",
+              "connect-src 'self' https://*.alchemyapi.io https://*.g.alchemy.com https://*.vercel.app",
             ].join('; '),
           },
           {
